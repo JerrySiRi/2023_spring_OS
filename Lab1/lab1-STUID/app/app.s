@@ -2,6 +2,7 @@
 .code32
 
 .global start
+
 start:
 	pushl $13
 	pushl $message

@@ -2,10 +2,30 @@
 
 #define SECTSIZE 512
 
-//【通过本文件加载app，即微型OS】
-
+//【通过本文件加载app，即微型OS.在保护模式下加载app，使用readSect函数进行磁盘扇区的读取】
+//1、把app.bin的内容读到0x8c00中，app.bin长度为58字节
+//2、跳转到0x8c00【使用内联汇编】
 void bootMain(void) {
-	// FIXME
+//【法一：可以通过函数指针，通过执行一个什麼都不作的函数，其函数首地址在0x8c00(Hello World程序的首地址)，来完成地址的跳转！】
+	void(*dest)(void)=(void(*))0x8c00;
+	readSect((void*)dest,1);
+	dest();
+	
+//【法二：通过内联汇编来无条件跳转】
+
+/*
+void(*target)(void)=(void(*))0x8c00;	
+asm(	"mov 0x8c00,%r0 /n/t"
+	"mov %r0, %[value] /n/t"
+           : [temp]"r"(target)
+           : [value]"r" (target) 
+           : 
+);
+//cat bootloader/bootloader.bin app/app.bin > os.img【两者的关系不是链接，而是加载和运行的关系》》不能引用另外一个模块的符号】
+asm("jmp target ");
+
+*/
+
 }
 
 void waitDisk(void) { // waiting for disk
