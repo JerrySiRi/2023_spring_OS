@@ -161,7 +161,7 @@
   start:
       cli                             #关闭中断
       inb $0x92,%al		      #【TODO】
-      orb $0x02,%al                   #【端口最后一位和倒数第二位都设置成1--可能有问题，最后一位快速启动是1是什么意思？】
+      orb $0x02,%al                   #【端口倒数第二位设置成1】
       outb %al,$0x92
                                       #启动A20总线，开启A20的地址线【以上三条均是】
     
@@ -192,7 +192,7 @@
   	pushl $13 # pushing the size to print into stack
   	pushl $message # pushing the address of message into stack
   	calll displayStr # calling the display function
- loop:
+ Sloop:
   	jmp bootMain # jump to bootMain in boot.c
 
  message:
