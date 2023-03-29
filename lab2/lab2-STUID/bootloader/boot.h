@@ -7,8 +7,8 @@ struct ELFHeader {
 	unsigned short type;
 	unsigned short machine;
 	unsigned int   version;
-	unsigned int   entry;
-	unsigned int   phoff;
+	unsigned int   entry;//可执行程序的入口地址
+	unsigned int   phoff;//Program头表的偏移地址
 	unsigned int   shoff;
 	unsigned int   flags;
 	unsigned short ehsize;
@@ -22,7 +22,7 @@ struct ELFHeader {
 /* ELF32 Program header */
 struct ProgramHeader {
 	unsigned int type;
-	unsigned int off;
+	unsigned int off;//Segment在ELF文件中的偏移量
 	unsigned int vaddr;
 	unsigned int paddr;
 	unsigned int filesz;

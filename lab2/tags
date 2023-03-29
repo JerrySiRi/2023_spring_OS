@@ -1,0 +1,388 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ASFLAGS	lab2-STUID/bootloader/Makefile	/^ASFLAGS = -m32$/;"	m
+ASFLAGS	lab2-STUID/kernel/Makefile	/^ASFLAGS = -m32$/;"	m
+BCFILES	lab2-STUID/bootloader/Makefile	/^BCFILES = $(shell find .\/ -name "*.c")$/;"	m
+BLUE_SCREEN_TEXT	lab2-STUID/kernel/lib/abort.c	21;"	d	file:
+BOBJS	lab2-STUID/bootloader/Makefile	/^BOBJS = $(BSFILES:.S=.o) $(BCFILES:.c=.o)$/;"	m
+BOOT_H	lab2-STUID/bootloader/boot.h	2;"	d
+BSFILES	lab2-STUID/bootloader/Makefile	/^BSFILES = $(shell find .\/ -name "*.S")$/;"	m
+CC	lab2-STUID/app/Makefile	/^CC = gcc$/;"	m
+CC	lab2-STUID/bootloader/Makefile	/^CC = gcc$/;"	m
+CC	lab2-STUID/kernel/Makefile	/^CC = gcc$/;"	m
+CFLAGS	lab2-STUID/app/Makefile	/^CFLAGS = -m32 -march=i386 -static \\$/;"	m
+CFLAGS	lab2-STUID/bootloader/Makefile	/^CFLAGS = -m32 -march=i386 -static \\$/;"	m
+CFLAGS	lab2-STUID/kernel/Makefile	/^CFLAGS = -m32 -march=i386 -static \\$/;"	m
+DPL_KERN	lab2-STUID/kernel/include/x86/memory.h	4;"	d
+DPL_USER	lab2-STUID/kernel/include/x86/memory.h	5;"	d
+ELFHeader	lab2-STUID/bootloader/boot.h	/^struct ELFHeader {$/;"	s
+ELFHeader	lab2-STUID/kernel/include/x86/io.h	/^struct ELFHeader {$/;"	s
+FALSE	lab2-STUID/kernel/include/common/const.h	5;"	d
+GProtectFaultHandle	lab2-STUID/kernel/kernel/irqHandle.c	/^void GProtectFaultHandle(struct TrapFrame *tf){$/;"	f
+GateDescriptor	lab2-STUID/kernel/include/x86/memory.h	/^struct GateDescriptor {$/;"	s
+INTERRUPT_GATE_32	lab2-STUID/kernel/kernel/idt.c	4;"	d	file:
+IRQ_SLAVE	lab2-STUID/kernel/kernel/i8259.c	5;"	d	file:
+K0_P	lab2-STUID/kernel/kernel/keyboard.c	15;"	d	file:
+K1_P	lab2-STUID/kernel/kernel/keyboard.c	6;"	d	file:
+K2_P	lab2-STUID/kernel/kernel/keyboard.c	7;"	d	file:
+K3_P	lab2-STUID/kernel/kernel/keyboard.c	8;"	d	file:
+K4_P	lab2-STUID/kernel/kernel/keyboard.c	9;"	d	file:
+K5_P	lab2-STUID/kernel/kernel/keyboard.c	10;"	d	file:
+K6_P	lab2-STUID/kernel/kernel/keyboard.c	11;"	d	file:
+K7_P	lab2-STUID/kernel/kernel/keyboard.c	12;"	d	file:
+K8_P	lab2-STUID/kernel/kernel/keyboard.c	13;"	d	file:
+K9_P	lab2-STUID/kernel/kernel/keyboard.c	14;"	d	file:
+KA_P	lab2-STUID/kernel/kernel/keyboard.c	34;"	d	file:
+KBAC_P	lab2-STUID/kernel/kernel/keyboard.c	18;"	d	file:
+KBSL_P	lab2-STUID/kernel/kernel/keyboard.c	47;"	d	file:
+KBTI_P	lab2-STUID/kernel/kernel/keyboard.c	45;"	d	file:
+KB_P	lab2-STUID/kernel/kernel/keyboard.c	52;"	d	file:
+KCAP_P	lab2-STUID/kernel/kernel/keyboard.c	62;"	d	file:
+KCFILES	lab2-STUID/kernel/Makefile	/^KCFILES = $(shell find .\/ -name "*.c")$/;"	m
+KCOM_P	lab2-STUID/kernel/kernel/keyboard.c	55;"	d	file:
+KC_P	lab2-STUID/kernel/kernel/keyboard.c	50;"	d	file:
+KDOT_P	lab2-STUID/kernel/kernel/keyboard.c	56;"	d	file:
+KD_P	lab2-STUID/kernel/kernel/keyboard.c	36;"	d	file:
+KENT_P	lab2-STUID/kernel/kernel/keyboard.c	32;"	d	file:
+KEQU_P	lab2-STUID/kernel/kernel/keyboard.c	17;"	d	file:
+KESC_P	lab2-STUID/kernel/kernel/keyboard.c	5;"	d	file:
+KEYTABLE_SIZE	lab2-STUID/kernel/kernel/keyboard.c	93;"	d	file:
+KE_P	lab2-STUID/kernel/kernel/keyboard.c	22;"	d	file:
+KF10_P	lab2-STUID/kernel/kernel/keyboard.c	72;"	d	file:
+KF11_P	lab2-STUID/kernel/kernel/keyboard.c	88;"	d	file:
+KF12_P	lab2-STUID/kernel/kernel/keyboard.c	89;"	d	file:
+KF1_P	lab2-STUID/kernel/kernel/keyboard.c	63;"	d	file:
+KF2_P	lab2-STUID/kernel/kernel/keyboard.c	64;"	d	file:
+KF3_P	lab2-STUID/kernel/kernel/keyboard.c	65;"	d	file:
+KF4_P	lab2-STUID/kernel/kernel/keyboard.c	66;"	d	file:
+KF5_P	lab2-STUID/kernel/kernel/keyboard.c	67;"	d	file:
+KF6_P	lab2-STUID/kernel/kernel/keyboard.c	68;"	d	file:
+KF7_P	lab2-STUID/kernel/kernel/keyboard.c	69;"	d	file:
+KF8_P	lab2-STUID/kernel/kernel/keyboard.c	70;"	d	file:
+KF9_P	lab2-STUID/kernel/kernel/keyboard.c	71;"	d	file:
+KFSL_P	lab2-STUID/kernel/kernel/keyboard.c	57;"	d	file:
+KF_P	lab2-STUID/kernel/kernel/keyboard.c	37;"	d	file:
+KG_P	lab2-STUID/kernel/kernel/keyboard.c	38;"	d	file:
+KH_P	lab2-STUID/kernel/kernel/keyboard.c	39;"	d	file:
+KI_P	lab2-STUID/kernel/kernel/keyboard.c	27;"	d	file:
+KJ_P	lab2-STUID/kernel/kernel/keyboard.c	40;"	d	file:
+KKP0_P	lab2-STUID/kernel/kernel/keyboard.c	86;"	d	file:
+KKP1_P	lab2-STUID/kernel/kernel/keyboard.c	83;"	d	file:
+KKP2_P	lab2-STUID/kernel/kernel/keyboard.c	84;"	d	file:
+KKP3_P	lab2-STUID/kernel/kernel/keyboard.c	85;"	d	file:
+KKP4_P	lab2-STUID/kernel/kernel/keyboard.c	79;"	d	file:
+KKP5_P	lab2-STUID/kernel/kernel/keyboard.c	80;"	d	file:
+KKP6_P	lab2-STUID/kernel/kernel/keyboard.c	81;"	d	file:
+KKP7_P	lab2-STUID/kernel/kernel/keyboard.c	75;"	d	file:
+KKP8_P	lab2-STUID/kernel/kernel/keyboard.c	76;"	d	file:
+KKP9_P	lab2-STUID/kernel/kernel/keyboard.c	77;"	d	file:
+KKPD_P	lab2-STUID/kernel/kernel/keyboard.c	87;"	d	file:
+KKPM_P	lab2-STUID/kernel/kernel/keyboard.c	78;"	d	file:
+KKPP_P	lab2-STUID/kernel/kernel/keyboard.c	82;"	d	file:
+KKPS_P	lab2-STUID/kernel/kernel/keyboard.c	59;"	d	file:
+KK_P	lab2-STUID/kernel/kernel/keyboard.c	41;"	d	file:
+KLAL_P	lab2-STUID/kernel/kernel/keyboard.c	60;"	d	file:
+KLBR_P	lab2-STUID/kernel/kernel/keyboard.c	30;"	d	file:
+KLCO_P	lab2-STUID/kernel/kernel/keyboard.c	33;"	d	file:
+KLSH_P	lab2-STUID/kernel/kernel/keyboard.c	46;"	d	file:
+KL_P	lab2-STUID/kernel/kernel/keyboard.c	42;"	d	file:
+KMIN_P	lab2-STUID/kernel/kernel/keyboard.c	16;"	d	file:
+KM_P	lab2-STUID/kernel/kernel/keyboard.c	54;"	d	file:
+KNLO_P	lab2-STUID/kernel/kernel/keyboard.c	73;"	d	file:
+KN_P	lab2-STUID/kernel/kernel/keyboard.c	53;"	d	file:
+KOBJS	lab2-STUID/kernel/Makefile	/^KOBJS = $(KCFILES:.c=.o) $(KSFILES:.S=.o)$/;"	m
+KO_P	lab2-STUID/kernel/kernel/keyboard.c	28;"	d	file:
+KP_P	lab2-STUID/kernel/kernel/keyboard.c	29;"	d	file:
+KQ_P	lab2-STUID/kernel/kernel/keyboard.c	20;"	d	file:
+KRBR_P	lab2-STUID/kernel/kernel/keyboard.c	31;"	d	file:
+KRSH_P	lab2-STUID/kernel/kernel/keyboard.c	58;"	d	file:
+KR_P	lab2-STUID/kernel/kernel/keyboard.c	23;"	d	file:
+KSCO_P	lab2-STUID/kernel/kernel/keyboard.c	43;"	d	file:
+KSEL	lab2-STUID/kernel/include/x86/memory.h	26;"	d
+KSFILES	lab2-STUID/kernel/Makefile	/^KSFILES = $(shell find .\/ -name "*.S")$/;"	m
+KSLO_P	lab2-STUID/kernel/kernel/keyboard.c	74;"	d	file:
+KSPA_P	lab2-STUID/kernel/kernel/keyboard.c	61;"	d	file:
+KSQU_P	lab2-STUID/kernel/kernel/keyboard.c	44;"	d	file:
+KS_P	lab2-STUID/kernel/kernel/keyboard.c	35;"	d	file:
+KTAB_P	lab2-STUID/kernel/kernel/keyboard.c	19;"	d	file:
+KT_P	lab2-STUID/kernel/kernel/keyboard.c	24;"	d	file:
+KU_P	lab2-STUID/kernel/kernel/keyboard.c	26;"	d	file:
+KV_P	lab2-STUID/kernel/kernel/keyboard.c	51;"	d	file:
+KW_P	lab2-STUID/kernel/kernel/keyboard.c	21;"	d	file:
+KX_P	lab2-STUID/kernel/kernel/keyboard.c	49;"	d	file:
+KY_P	lab2-STUID/kernel/kernel/keyboard.c	25;"	d	file:
+KZ_P	lab2-STUID/kernel/kernel/keyboard.c	48;"	d	file:
+KeyboardHandle	lab2-STUID/kernel/kernel/irqHandle.c	/^void KeyboardHandle(struct TrapFrame *tf){$/;"	f
+LCFILES	lab2-STUID/app/Makefile	/^LCFILES = $(shell find ..\/lib -name "*.c")$/;"	m
+LD	lab2-STUID/app/Makefile	/^LD = ld$/;"	m
+LD	lab2-STUID/bootloader/Makefile	/^LD = ld$/;"	m
+LD	lab2-STUID/kernel/Makefile	/^LD = ld$/;"	m
+LDFLAGS	lab2-STUID/app/Makefile	/^LDFLAGS = -m elf_i386$/;"	m
+LDFLAGS	lab2-STUID/bootloader/Makefile	/^LDFLAGS = -m elf_i386$/;"	m
+LDFLAGS	lab2-STUID/kernel/Makefile	/^LDFLAGS = -m elf_i386$/;"	m
+MAX_BUFFER_SIZE	lab2-STUID/lib/lib.h	11;"	d
+MAX_KEYBUFFER_SIZE	lab2-STUID/kernel/include/device/keyboard.h	4;"	d
+NR_IRQ	lab2-STUID/kernel/include/x86/cpu.h	30;"	d
+NR_SEGMENTS	lab2-STUID/kernel/include/x86/memory.h	18;"	d
+NULL	lab2-STUID/kernel/include/common/const.h	7;"	d
+PORT_PIC_MASTER	lab2-STUID/kernel/kernel/i8259.c	3;"	d	file:
+PORT_PIC_SLAVE	lab2-STUID/kernel/kernel/i8259.c	4;"	d	file:
+ProgramHeader	lab2-STUID/bootloader/boot.h	/^struct ProgramHeader {$/;"	s
+ProgramHeader	lab2-STUID/kernel/include/x86/io.h	/^struct ProgramHeader {$/;"	s
+QEMU	lab2-STUID/Makefile	/^QEMU = qemu-system-i386$/;"	m
+SECTSIZE	lab2-STUID/bootloader/boot.c	3;"	d	file:
+SECTSIZE	lab2-STUID/kernel/kernel/disk.c	4;"	d	file:
+SEG	lab2-STUID/kernel/include/x86/memory.h	68;"	d
+SEG16	lab2-STUID/kernel/include/x86/memory.h	73;"	d
+SEG_KCODE	lab2-STUID/kernel/include/x86/memory.h	19;"	d
+SEG_KDATA	lab2-STUID/kernel/include/x86/memory.h	20;"	d
+SEG_TSS	lab2-STUID/kernel/include/x86/memory.h	23;"	d
+SEG_UCODE	lab2-STUID/kernel/include/x86/memory.h	21;"	d
+SEG_UDATA	lab2-STUID/kernel/include/x86/memory.h	22;"	d
+SERIAL_PORT	lab2-STUID/kernel/include/device/serial.h	6;"	d
+STA_R	lab2-STUID/kernel/include/x86/memory.h	10;"	d
+STA_W	lab2-STUID/kernel/include/x86/memory.h	9;"	d
+STA_X	lab2-STUID/kernel/include/x86/memory.h	8;"	d
+STD_IN	lab2-STUID/lib/lib.h	8;"	d
+STD_OUT	lab2-STUID/lib/lib.h	5;"	d
+STD_STR	lab2-STUID/lib/lib.h	9;"	d
+STS_IG32	lab2-STUID/kernel/include/x86/memory.h	14;"	d
+STS_T32A	lab2-STUID/kernel/include/x86/memory.h	13;"	d
+STS_TG32	lab2-STUID/kernel/include/x86/memory.h	15;"	d
+SYS_READ	lab2-STUID/lib/lib.h	7;"	d
+SYS_WRITE	lab2-STUID/lib/lib.h	4;"	d
+SegDesc	lab2-STUID/kernel/include/x86/memory.h	/^struct SegDesc {$/;"	s
+SegDesc	lab2-STUID/kernel/include/x86/memory.h	/^typedef struct SegDesc SegDesc;$/;"	t	typeref:struct:SegDesc
+TRAP_GATE_32	lab2-STUID/kernel/kernel/idt.c	5;"	d	file:
+TRUE	lab2-STUID/kernel/include/common/const.h	4;"	d
+TSS	lab2-STUID/kernel/include/x86/memory.h	/^struct TSS {$/;"	s
+TSS	lab2-STUID/kernel/include/x86/memory.h	/^typedef struct TSS TSS;$/;"	t	typeref:struct:TSS
+TrapFrame	lab2-STUID/kernel/include/x86/memory.h	/^struct TrapFrame {$/;"	s
+UCFILES	lab2-STUID/app/Makefile	/^UCFILES = $(shell find .\/ -name "*.c")$/;"	m
+UOBJS	lab2-STUID/app/Makefile	/^UOBJS = $(UCFILES:.c=.o) $(LCFILES:.c=.o)$/;"	m
+USEL	lab2-STUID/kernel/include/x86/memory.h	27;"	d
+__ASSERT_H__	lab2-STUID/kernel/include/common/assert.h	2;"	d
+__COMMON_H__	lab2-STUID/kernel/include/common.h	2;"	d
+__CONST_H__	lab2-STUID/kernel/include/common/const.h	2;"	d
+__DEVICE_H__	lab2-STUID/kernel/include/device.h	2;"	d
+__DISK_H__	lab2-STUID/kernel/include/device/disk.h	2;"	d
+__IRQ_H__	lab2-STUID/kernel/include/x86/irq.h	2;"	d
+__KEYBOARD_H__	lab2-STUID/kernel/include/device/keyboard.h	2;"	d
+__SERIAL_H__	lab2-STUID/kernel/include/device/serial.h	2;"	d
+__TYPES_H__	lab2-STUID/kernel/include/common/types.h	2;"	d
+__TYPES_H__	lab2-STUID/lib/types.h	2;"	d
+__VGA_H__	lab2-STUID/kernel/include/device/vga.h	2;"	d
+__X86_CPU_H__	lab2-STUID/kernel/include/x86/cpu.h	2;"	d
+__X86_H__	lab2-STUID/kernel/include/x86.h	2;"	d
+__X86_IO_H__	lab2-STUID/kernel/include/x86/io.h	2;"	d
+__X86_MEMORY_H__	lab2-STUID/kernel/include/x86/memory.h	2;"	d
+__lib_h__	lab2-STUID/lib/lib.h	2;"	d
+abort	lab2-STUID/kernel/lib/abort.c	/^int abort(const char *fname, int line) {$/;"	f
+align	lab2-STUID/bootloader/boot.h	/^	unsigned int align;$/;"	m	struct:ProgramHeader
+align	lab2-STUID/kernel/include/x86/io.h	/^	unsigned int align;$/;"	m	struct:ProgramHeader
+append	lab2-STUID/kernel/lib/abort.c	/^static void append(char **p, const char *str) {$/;"	f	file:
+asmDoIrq	lab2-STUID/kernel/kernel/doIrq.S	/^asmDoIrq:$/;"	l
+assert	lab2-STUID/kernel/include/common/assert.h	7;"	d
+avl	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t avl : 1;        \/\/ Unused (available for software use)$/;"	m	struct:SegDesc
+base_15_0	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t base_15_0 : 16; \/\/ Low bits of segment base address$/;"	m	struct:SegDesc
+base_23_16	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t base_23_16 : 8; \/\/ Middle bits of segment base address$/;"	m	struct:SegDesc
+base_31_24	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t base_31_24 : 8; \/\/ High bits of segment base address$/;"	m	struct:SegDesc
+boolean	lab2-STUID/lib/types.h	/^typedef unsigned char  boolean;$/;"	t
+bootMain	lab2-STUID/bootloader/boot.c	/^void bootMain(void) {$/;"	f
+bufferHead	lab2-STUID/kernel/kernel/keyboard.c	/^int bufferHead;$/;"	v
+bufferTail	lab2-STUID/kernel/kernel/keyboard.c	/^int bufferTail;$/;"	v
+clearScreen	lab2-STUID/kernel/kernel/vga.c	/^void clearScreen() {$/;"	f
+cr3	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t cr3, eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;$/;"	m	struct:TSS::__anon1::__anon3
+cs	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t es, cs, ss, ds, fs, gs, ldt;$/;"	m	struct:TSS::__anon1::__anon3
+db	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t db : 1;         \/\/ 0 = 16-bit segment, 1 = 32-bit segment$/;"	m	struct:SegDesc
+dec2Str	lab2-STUID/lib/syscall.c	/^int dec2Str(int decimal, char *buffer, int size, int count) {$/;"	f
+disableInterrupt	lab2-STUID/kernel/include/x86/cpu.h	/^static inline void disableInterrupt(void) {$/;"	f
+displayClear	lab2-STUID/kernel/kernel/vga.c	/^int displayClear = 0;$/;"	v
+displayCol	lab2-STUID/kernel/kernel/vga.c	/^int displayCol = 0;$/;"	v
+displayMem	lab2-STUID/kernel/kernel/vga.c	/^uint16_t displayMem[80*25];$/;"	v
+displayMessage	lab2-STUID/kernel/lib/abort.c	/^static void displayMessage(const char *file, int line) {$/;"	f	file:
+displayRow	lab2-STUID/kernel/kernel/vga.c	/^int displayRow = 0;$/;"	v
+dontcare	lab2-STUID/kernel/include/x86/memory.h	/^			char dontcare[88];$/;"	m	struct:TSS::__anon1::__anon2
+dpl	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t dpl : 2;        \/\/ Descriptor Privilege Level$/;"	m	struct:SegDesc
+ds	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t es, cs, ss, ds, fs, gs, ldt;$/;"	m	struct:TSS::__anon1::__anon3
+eax	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t cr3, eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;$/;"	m	struct:TSS::__anon1::__anon3
+eax	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	struct:TrapFrame
+ebp	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t cr3, eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;$/;"	m	struct:TSS::__anon1::__anon3
+ebp	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	struct:TrapFrame
+ebx	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t cr3, eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;$/;"	m	struct:TSS::__anon1::__anon3
+ebx	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	struct:TrapFrame
+ecx	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t cr3, eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;$/;"	m	struct:TSS::__anon1::__anon3
+ecx	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	struct:TrapFrame
+edi	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t cr3, eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;$/;"	m	struct:TSS::__anon1::__anon3
+edi	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	struct:TrapFrame
+edx	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t cr3, eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;$/;"	m	struct:TSS::__anon1::__anon3
+edx	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	struct:TrapFrame
+eflags	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t cr3, eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;$/;"	m	struct:TSS::__anon1::__anon3
+ehsize	lab2-STUID/bootloader/boot.h	/^	unsigned short ehsize;$/;"	m	struct:ELFHeader
+ehsize	lab2-STUID/kernel/include/x86/io.h	/^	unsigned short ehsize;$/;"	m	struct:ELFHeader
+eip	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t cr3, eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;$/;"	m	struct:TSS::__anon1::__anon3
+elf	lab2-STUID/bootloader/boot.h	/^	unsigned char  elf[12];$/;"	m	struct:ELFHeader
+elf	lab2-STUID/kernel/include/x86/io.h	/^	unsigned char  elf[12];$/;"	m	struct:ELFHeader
+enableInterrupt	lab2-STUID/kernel/include/x86/cpu.h	/^static inline void enableInterrupt(void) {$/;"	f
+enterUserSpace	lab2-STUID/kernel/kernel/kvm.c	/^void enterUserSpace(uint32_t entry) {$/;"	f
+entry	lab2-STUID/bootloader/boot.h	/^	unsigned int   entry;$/;"	m	struct:ELFHeader
+entry	lab2-STUID/kernel/include/x86/io.h	/^	unsigned int   entry;$/;"	m	struct:ELFHeader
+es	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t es, cs, ss, ds, fs, gs, ldt;$/;"	m	struct:TSS::__anon1::__anon3
+esi	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t cr3, eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;$/;"	m	struct:TSS::__anon1::__anon3
+esi	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	struct:TrapFrame
+esp	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t cr3, eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;$/;"	m	struct:TSS::__anon1::__anon3
+esp0	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t esp0;         \/\/ Ring 0 Stack pointer and segment selector$/;"	m	struct:TSS
+esp1	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t esp1,ss1,esp2,ss2;$/;"	m	struct:TSS::__anon1::__anon3
+esp2	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t esp1,ss1,esp2,ss2;$/;"	m	struct:TSS::__anon1::__anon3
+filesz	lab2-STUID/bootloader/boot.h	/^	unsigned int filesz;$/;"	m	struct:ProgramHeader
+filesz	lab2-STUID/kernel/include/x86/io.h	/^	unsigned int filesz;$/;"	m	struct:ProgramHeader
+flags	lab2-STUID/bootloader/boot.h	/^	unsigned int   flags;$/;"	m	struct:ELFHeader
+flags	lab2-STUID/bootloader/boot.h	/^	unsigned int flags;$/;"	m	struct:ProgramHeader
+flags	lab2-STUID/kernel/include/x86/io.h	/^	unsigned int   flags;$/;"	m	struct:ELFHeader
+flags	lab2-STUID/kernel/include/x86/io.h	/^	unsigned int flags;$/;"	m	struct:ProgramHeader
+fs	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t es, cs, ss, ds, fs, gs, ldt;$/;"	m	struct:TSS::__anon1::__anon3
+g	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t g : 1;          \/\/ Granularity: limit scaled by 4K when set$/;"	m	struct:SegDesc
+gdt	lab2-STUID/bootloader/start.S	/^gdt: # 8 bytes for each table entry, at least 1 entry$/;"	l
+gdt	lab2-STUID/kernel/kernel/kvm.c	/^SegDesc gdt[NR_SEGMENTS];       \/\/ the new GDT, NR_SEGMENTS=7, defined in x86\/memory.h$/;"	v
+gdtDesc	lab2-STUID/bootloader/start.S	/^gdtDesc: # 6 bytes in total$/;"	l
+getChar	lab2-STUID/kernel/kernel/keyboard.c	/^char getChar(uint32_t code) {$/;"	f
+getChar	lab2-STUID/lib/syscall.c	/^char getChar(){ \/\/ 对应SYS_READ STD_IN$/;"	f
+getKeyCode	lab2-STUID/kernel/kernel/keyboard.c	/^uint32_t getKeyCode() {$/;"	f
+getStr	lab2-STUID/lib/syscall.c	/^void getStr(char *str, int size){ \/\/ 对应SYS_READ STD_STR$/;"	f
+gs	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t es, cs, ss, ds, fs, gs, ldt;$/;"	m	struct:TSS::__anon1::__anon3
+hex2Str	lab2-STUID/lib/syscall.c	/^int hex2Str(uint32_t hexadecimal, char *buffer, int size, int count) {$/;"	f
+i2A	lab2-STUID/kernel/lib/abort.c	/^static char *i2A(int a) {$/;"	f	file:
+idt	lab2-STUID/kernel/kernel/idt.c	/^struct GateDescriptor idt[NR_IRQ]; \/\/ NR_IRQ=256, defined in x86\/cpu.h$/;"	v	typeref:struct:GateDescriptor
+inByte	lab2-STUID/bootloader/boot.h	/^static inline char inByte(short port) {$/;"	f
+inByte	lab2-STUID/kernel/include/x86/io.h	/^static inline uint8_t inByte(uint16_t port) {$/;"	f
+inLong	lab2-STUID/bootloader/boot.h	/^static inline int inLong(short port) {$/;"	f
+inLong	lab2-STUID/kernel/include/x86/io.h	/^static inline int inLong(short port) {$/;"	f
+initIdt	lab2-STUID/kernel/kernel/idt.c	/^void initIdt() {$/;"	f
+initIntr	lab2-STUID/kernel/kernel/i8259.c	/^initIntr(void) {$/;"	f
+initKeyTable	lab2-STUID/kernel/kernel/keyboard.c	/^void initKeyTable() {$/;"	f
+initSeg	lab2-STUID/kernel/kernel/kvm.c	/^void initSeg() { \/\/ setup kernel segements$/;"	f
+initSerial	lab2-STUID/kernel/kernel/serial.c	/^void initSerial(void) {$/;"	f
+initVga	lab2-STUID/kernel/kernel/vga.c	/^void initVga() {$/;"	f
+int16_t	lab2-STUID/kernel/include/common/types.h	/^typedef          short int16_t;$/;"	t
+int16_t	lab2-STUID/lib/types.h	/^typedef          short int16_t;$/;"	t
+int32_t	lab2-STUID/kernel/include/common/types.h	/^typedef          int   int32_t;$/;"	t
+int32_t	lab2-STUID/lib/types.h	/^typedef          int   int32_t;$/;"	t
+int8_t	lab2-STUID/kernel/include/common/types.h	/^typedef          char  int8_t;$/;"	t
+int8_t	lab2-STUID/lib/types.h	/^typedef          char  int8_t;$/;"	t
+irq	lab2-STUID/kernel/include/x86/memory.h	/^	int32_t irq;$/;"	m	struct:TrapFrame
+irqAlignCheck	lab2-STUID/kernel/kernel/doIrq.S	/^irqAlignCheck:$/;"	l
+irqDoubleFault	lab2-STUID/kernel/kernel/doIrq.S	/^irqDoubleFault:$/;"	l
+irqEmpty	lab2-STUID/kernel/kernel/doIrq.S	/^irqEmpty:$/;"	l
+irqErrorCode	lab2-STUID/kernel/kernel/doIrq.S	/^irqErrorCode:$/;"	l
+irqGProtectFault	lab2-STUID/kernel/kernel/doIrq.S	/^irqGProtectFault:$/;"	l
+irqHandle	lab2-STUID/kernel/kernel/irqHandle.c	/^void irqHandle(struct TrapFrame *tf) { \/\/ pointer tf = esp$/;"	f
+irqInvalidTSS	lab2-STUID/kernel/kernel/doIrq.S	/^irqInvalidTSS:$/;"	l
+irqKeyboard	lab2-STUID/kernel/kernel/doIrq.S	/^irqKeyboard:$/;"	l
+irqPageFault	lab2-STUID/kernel/kernel/doIrq.S	/^irqPageFault:$/;"	l
+irqSecException	lab2-STUID/kernel/kernel/doIrq.S	/^irqSecException:$/;"	l
+irqSegNotPresent	lab2-STUID/kernel/kernel/doIrq.S	/^irqSegNotPresent:$/;"	l
+irqStackSegFault	lab2-STUID/kernel/kernel/doIrq.S	/^irqStackSegFault:$/;"	l
+irqSyscall	lab2-STUID/kernel/kernel/doIrq.S	/^irqSyscall:$/;"	l
+kEntry	lab2-STUID/kernel/main.c	/^void kEntry(void) {$/;"	f
+keyBuffer	lab2-STUID/kernel/kernel/keyboard.c	/^uint32_t keyBuffer[MAX_KEYBUFFER_SIZE];$/;"	v
+keyTable	lab2-STUID/kernel/kernel/keyboard.c	/^static char *keyTable;$/;"	v	file:
+keyTableL	lab2-STUID/kernel/kernel/keyboard.c	/^static char keyTableL[KEYTABLE_SIZE];$/;"	v	file:
+keyTableU	lab2-STUID/kernel/kernel/keyboard.c	/^static char keyTableU[KEYTABLE_SIZE];$/;"	v	file:
+keyboardState	lab2-STUID/kernel/kernel/keyboard.c	/^static int keyboardState;$/;"	v	file:
+lLdt	lab2-STUID/kernel/include/x86/memory.h	/^static inline void lLdt(uint16_t sel)$/;"	f
+ldt	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t es, cs, ss, ds, fs, gs, ldt;$/;"	m	struct:TSS::__anon1::__anon3
+lim_15_0	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t lim_15_0 : 16;  \/\/ Low bits of segment limit$/;"	m	struct:SegDesc
+lim_19_16	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t lim_19_16 : 4;  \/\/ High bits of segment limit$/;"	m	struct:SegDesc
+link	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t link;         \/\/ old ts selector$/;"	m	struct:TSS
+loadUMain	lab2-STUID/kernel/kernel/kvm.c	/^void loadUMain(void) {$/;"	f
+machine	lab2-STUID/bootloader/boot.h	/^	unsigned short machine;$/;"	m	struct:ELFHeader
+machine	lab2-STUID/kernel/include/x86/io.h	/^	unsigned short machine;$/;"	m	struct:ELFHeader
+magic	lab2-STUID/bootloader/boot.h	/^	unsigned int   magic;$/;"	m	struct:ELFHeader
+magic	lab2-STUID/kernel/include/x86/io.h	/^	unsigned int   magic;$/;"	m	struct:ELFHeader
+memsz	lab2-STUID/bootloader/boot.h	/^	unsigned int memsz;$/;"	m	struct:ProgramHeader
+memsz	lab2-STUID/kernel/include/x86/io.h	/^	unsigned int memsz;$/;"	m	struct:ProgramHeader
+off	lab2-STUID/bootloader/boot.h	/^	unsigned int off;$/;"	m	struct:ProgramHeader
+off	lab2-STUID/kernel/include/x86/io.h	/^	unsigned int off;$/;"	m	struct:ProgramHeader
+offset_15_0	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t offset_15_0      : 16;$/;"	m	struct:GateDescriptor
+offset_31_16	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t offset_31_16     : 16;$/;"	m	struct:GateDescriptor
+outByte	lab2-STUID/bootloader/boot.h	/^static inline void outByte(short port, char data) {$/;"	f
+outByte	lab2-STUID/kernel/include/x86/io.h	/^static inline void outByte(uint16_t port, int8_t data) {$/;"	f
+p	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t p : 1;          \/\/ Present$/;"	m	struct:SegDesc
+pad0	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t pad0             : 8;$/;"	m	struct:GateDescriptor
+paddr	lab2-STUID/bootloader/boot.h	/^	unsigned int paddr;$/;"	m	struct:ProgramHeader
+paddr	lab2-STUID/kernel/include/x86/io.h	/^	unsigned int paddr;$/;"	m	struct:ProgramHeader
+phentsize	lab2-STUID/bootloader/boot.h	/^	unsigned short phentsize;$/;"	m	struct:ELFHeader
+phentsize	lab2-STUID/kernel/include/x86/io.h	/^	unsigned short phentsize;$/;"	m	struct:ELFHeader
+phnum	lab2-STUID/bootloader/boot.h	/^	unsigned short phnum;$/;"	m	struct:ELFHeader
+phnum	lab2-STUID/kernel/include/x86/io.h	/^	unsigned short phnum;$/;"	m	struct:ELFHeader
+phoff	lab2-STUID/bootloader/boot.h	/^	unsigned int   phoff;$/;"	m	struct:ELFHeader
+phoff	lab2-STUID/kernel/include/x86/io.h	/^	unsigned int   phoff;$/;"	m	struct:ELFHeader
+pid_t	lab2-STUID/lib/types.h	/^typedef int32_t  pid_t;$/;"	t
+present	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t present          : 1;$/;"	m	struct:GateDescriptor
+printf	lab2-STUID/lib/syscall.c	/^void printf(const char *format,...){$/;"	f
+privilege_level	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t privilege_level  : 2;$/;"	m	struct:GateDescriptor
+putChar	lab2-STUID/kernel/kernel/serial.c	/^void putChar(char ch) {$/;"	f
+readSect	lab2-STUID/bootloader/boot.c	/^void readSect(void *dst, int offset) { \/\/ reading a sector of disk$/;"	f
+readSect	lab2-STUID/kernel/kernel/disk.c	/^void readSect(void *dst, int offset) {$/;"	f
+rsv1	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t rsv1 : 1;       \/\/ Reserved$/;"	m	struct:SegDesc
+s	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t s : 1;          \/\/ 0 = system, 1 = application$/;"	m	struct:SegDesc
+saveIdt	lab2-STUID/kernel/include/x86/cpu.h	/^static inline void saveIdt(void *addr, uint32_t size) {$/;"	f
+scrollScreen	lab2-STUID/kernel/kernel/vga.c	/^void scrollScreen() {$/;"	f
+segment	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t segment          : 16;$/;"	m	struct:GateDescriptor
+serialIdle	lab2-STUID/kernel/kernel/serial.c	/^static inline int serialIdle(void) {$/;"	f	file:
+setGdt	lab2-STUID/kernel/include/x86/memory.h	/^static inline void setGdt(SegDesc *gdt, uint32_t size) {$/;"	f
+setIntr	lab2-STUID/kernel/kernel/idt.c	/^static void setIntr(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {$/;"	f	file:
+setTrap	lab2-STUID/kernel/kernel/idt.c	/^static void setTrap(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {$/;"	f	file:
+shentsize	lab2-STUID/bootloader/boot.h	/^	unsigned short shentsize;$/;"	m	struct:ELFHeader
+shentsize	lab2-STUID/kernel/include/x86/io.h	/^	unsigned short shentsize;$/;"	m	struct:ELFHeader
+shnum	lab2-STUID/bootloader/boot.h	/^	unsigned short shnum;$/;"	m	struct:ELFHeader
+shnum	lab2-STUID/kernel/include/x86/io.h	/^	unsigned short shnum;$/;"	m	struct:ELFHeader
+shoff	lab2-STUID/bootloader/boot.h	/^	unsigned int   shoff;$/;"	m	struct:ELFHeader
+shoff	lab2-STUID/kernel/include/x86/io.h	/^	unsigned int   shoff;$/;"	m	struct:ELFHeader
+shstrndx	lab2-STUID/bootloader/boot.h	/^	unsigned short shstrndx;$/;"	m	struct:ELFHeader
+shstrndx	lab2-STUID/kernel/include/x86/io.h	/^	unsigned short shstrndx;$/;"	m	struct:ELFHeader
+size_t	lab2-STUID/kernel/include/common/types.h	/^typedef unsigned int   size_t;$/;"	t
+size_t	lab2-STUID/lib/types.h	/^typedef uint32_t size_t;$/;"	t
+ss	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t es, cs, ss, ds, fs, gs, ldt;$/;"	m	struct:TSS::__anon1::__anon3
+ss0	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t ss0;          \/\/ after an increase in privilege level$/;"	m	struct:TSS
+ss1	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t esp1,ss1,esp2,ss2;$/;"	m	struct:TSS::__anon1::__anon3
+ss2	lab2-STUID/kernel/include/x86/memory.h	/^			uint32_t esp1,ss1,esp2,ss2;$/;"	m	struct:TSS::__anon1::__anon3
+start	lab2-STUID/bootloader/start.S	/^start:$/;"	l
+start32	lab2-STUID/bootloader/start.S	/^start32:$/;"	l
+str2Str	lab2-STUID/lib/syscall.c	/^int str2Str(char *string, char *buffer, int size, int count) {$/;"	f
+switchKeyboard	lab2-STUID/kernel/kernel/keyboard.c	/^static inline void switchKeyboard() {$/;"	f	file:
+syscall	lab2-STUID/lib/syscall.c	/^int32_t syscall(int num, uint32_t a1,uint32_t a2,$/;"	f
+syscallGetChar	lab2-STUID/kernel/kernel/irqHandle.c	/^void syscallGetChar(struct TrapFrame *tf){$/;"	f
+syscallGetStr	lab2-STUID/kernel/kernel/irqHandle.c	/^void syscallGetStr(struct TrapFrame *tf){$/;"	f
+syscallHandle	lab2-STUID/kernel/kernel/irqHandle.c	/^void syscallHandle(struct TrapFrame *tf) {$/;"	f
+syscallPrint	lab2-STUID/kernel/kernel/irqHandle.c	/^void syscallPrint(struct TrapFrame *tf) {$/;"	f
+syscallRead	lab2-STUID/kernel/kernel/irqHandle.c	/^void syscallRead(struct TrapFrame *tf){$/;"	f
+syscallWrite	lab2-STUID/kernel/kernel/irqHandle.c	/^void syscallWrite(struct TrapFrame *tf) {$/;"	f
+system	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t system           : 1;$/;"	m	struct:GateDescriptor
+tss	lab2-STUID/kernel/kernel/kvm.c	/^TSS tss;$/;"	v
+type	lab2-STUID/bootloader/boot.h	/^	unsigned int type;$/;"	m	struct:ProgramHeader
+type	lab2-STUID/bootloader/boot.h	/^	unsigned short type;$/;"	m	struct:ELFHeader
+type	lab2-STUID/kernel/include/x86/io.h	/^	unsigned int type;$/;"	m	struct:ProgramHeader
+type	lab2-STUID/kernel/include/x86/io.h	/^	unsigned short type;$/;"	m	struct:ELFHeader
+type	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t type             : 4;$/;"	m	struct:GateDescriptor
+type	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t type : 4;       \/\/ Segment type (see STS_ constants)$/;"	m	struct:SegDesc
+uEntry	lab2-STUID/app/main.c	/^int uEntry(void) {$/;"	f
+uint16_t	lab2-STUID/kernel/include/common/types.h	/^typedef unsigned short uint16_t;$/;"	t
+uint16_t	lab2-STUID/lib/types.h	/^typedef unsigned short uint16_t;$/;"	t
+uint32_t	lab2-STUID/kernel/include/common/types.h	/^typedef unsigned int   uint32_t;$/;"	t
+uint32_t	lab2-STUID/lib/types.h	/^typedef unsigned int   uint32_t;$/;"	t
+uint8_t	lab2-STUID/kernel/include/common/types.h	/^typedef unsigned char  uint8_t;$/;"	t
+uint8_t	lab2-STUID/lib/types.h	/^typedef unsigned char  uint8_t;$/;"	t
+updateCursor	lab2-STUID/kernel/kernel/vga.c	/^void updateCursor(int row, int col){$/;"	f
+vaddr	lab2-STUID/bootloader/boot.h	/^	unsigned int vaddr;$/;"	m	struct:ProgramHeader
+vaddr	lab2-STUID/kernel/include/x86/io.h	/^	unsigned int vaddr;$/;"	m	struct:ProgramHeader
+version	lab2-STUID/bootloader/boot.h	/^	unsigned int   version;$/;"	m	struct:ELFHeader
+version	lab2-STUID/kernel/include/x86/io.h	/^	unsigned int   version;$/;"	m	struct:ELFHeader
+waitDisk	lab2-STUID/bootloader/boot.c	/^void waitDisk(void) { \/\/ waiting for disk$/;"	f
+waitDisk	lab2-STUID/kernel/kernel/disk.c	/^void waitDisk(void) {$/;"	f
+waitForInterrupt	lab2-STUID/kernel/include/x86/cpu.h	/^static inline void waitForInterrupt() {$/;"	f
+xxx	lab2-STUID/kernel/include/x86/memory.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	struct:TrapFrame
