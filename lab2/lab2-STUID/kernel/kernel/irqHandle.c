@@ -30,8 +30,17 @@ void irqHandle(struct TrapFrame *tf) { // pointer tf = esp
 	//asm volatile("movw %%ax, %%es"::"a"(KSEL(SEG_KDATA)));
 	//asm volatile("movw %%ax, %%fs"::"a"(KSEL(SEG_KDATA)));
 	//asm volatile("movw %%ax, %%gs"::"a"(KSEL(SEG_KDATA)));
-	switch(tf->irq) {
+	switch(tf->irq) {//【【【对中断向量号进行查询后，确定了中断处理程序，再在中断处理程序中，对调用号进行分发】】】
 		// TODO: 填好中断处理程序的调用，目前只有两种系统调用可用【KeyboardHandle和syscallHandle，完成他们后调用即可】
+		case 0xd://此时新增的80386的通用保护异常
+			GProtectFaultHandle(tf);
+			break;
+		case 0x21:
+			KeyboardHandle(tf);
+			break;
+		case 0x80:
+			syscallHandle(tf);
+			break;
 		default:assert(0);
 	}
 }

@@ -81,21 +81,60 @@ void printf(const char *format,...){
 	int i=0; // format index
 	char buffer[MAX_BUFFER_SIZE];
 	int count=0; // buffer index
-	int index=0; // parameter index
-	void *paraList=(void*)&format; // address of format in stack
-	int state=0; // 0: legal character; 1: '%'; 2: illegal format
+	int index=0; // parameter index-----好像也用不到诶
+	void *paraList=(void*)&format; // address of format in stack【是format指针本身自己的地址，在栈中！】
+//【【Review：调用函数的时候所有的参数都压入栈中了！所以printf可以不光使用PA中的va_list数据类型，更可以使用栈中参数的位置来进行访问参数！】】
+	int state=0; // 0: legal character; 1: '%'; 2: illegal format-------没必要用
+	//以下是传入的四种类型的参数来让printf解析，且下面的都是参数的值或开始位置
 	int decimal=0;
 	uint32_t hexadecimal=0;
 	char *string=0;
 	char character=0;
 	while(format[i]!=0){
+		// TODO:在count达到MAX_BUFFER_SIZE的时候就要进行一次显示，而不一定是最终解析完成才全部解释
+		// TODO-在用户态【对参数进行处理】，并进行系统调用传入参数和调用号，并如下，系统调用向内核发送软中断请求。
 		buffer[count] = format[i];
-		count++;
-		// TODO: in lab2 在count达到MAX_BUFFER_SIZE的时候就要进行一次显示，而不一定是最终解析完成才全部解释【要补充代码】
-	}
+		count++;//默认都给count++啦
+		if(format[i]=="%"){
+			count--;//原来被放到buffer[count]位置的是%，不能被输出，得被覆盖
+			i++;//判断%后面的是什么，如%d，%s
+			//只有遇到了%，才会使用参数呢！
+			paraList +=sizeof(format);//把下一个被输出的字符串、十进制、十六进制的位置准备好
+			switch(format[i]){
+				case "d":
+					decimal = *(int*)paraList;
+					count = dec2Str(decimal, buffer, MAX_BUFFER_SIZE, count);
+					break;
+				case "x":
+					hexadecimal = *(uint32_t)paraList;
+					count = hex2Str(hexadecimal, buffer, MAX_BUFFER_SIZE, count);
+					break;
+				case "s":
+					string = *(char**)paraList;//此时paralist被解读一个指向char*的指针【二重指针啦】
+					count = str2Str(string, buffer, MAX_BUFFER_SIZE, count);
+					break;
+				case "c":
+					character = *(char*)paraList;
+					buffer[count] = character;
+					count ++;
+					break;
+			}
+			
+		}
+		if(count == MAX_BUFFER_SIZE){
+			syscall(SYS_WRITE,STD_OUT,(uint32_t)buffer,(uint32_t)MAX_BUFFER_SIZE,0,0);
+			count=0;//count已经到达最大啦，输出后清0
+		}
+
+		i++;//当前遇到的format不是%的情况，比如乘法*，加法+等
+	}//while的结束
+		
 	if(count!=0)
 		syscall(SYS_WRITE, STD_OUT, (uint32_t)buffer, (uint32_t)count, 0, 0);
 }
+
+
+
 
 int dec2Str(int decimal, char *buffer, int size, int count) {
 	int i=0;

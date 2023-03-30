@@ -79,8 +79,8 @@ void initIdt() {
 	
 	/* Exceptions with DPL = 3 */
 	// TODO: 填好剩下的表项 
-	 setTrap(idt + 0x21, SEG_KCODE, (uint32_t)irqKeyboard, DPL_KERN);
-	 setIntr(idt + 0x80, SEG_KCODE, (uint32_t)irqSyscall, DPL_USER); 
+	 setTrap(idt + 0x21, SEG_KCODE, (uint32_t)irqKeyboard, DPL_KERN);//irqKeyboard的调用号是0x21
+	 setIntr(idt + 0x80, SEG_KCODE, (uint32_t)irqSyscall, DPL_USER); //irqSyacall的调用号是0x80
 	 //系统调用的 int 0x80, 中断向量是 0x80, 在用户态，ring3发出的中断》DPL_USER=3
 	/* 写入IDT */
 	saveIdt(idt, sizeof(idt));

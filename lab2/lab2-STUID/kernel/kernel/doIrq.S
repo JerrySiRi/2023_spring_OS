@@ -62,6 +62,7 @@ irqSecException:
 
 //【【【键盘中断的处理函数！！！】】】
 //以下irqKeyboard对应的是irqHandle.c中的Keyboardandle函数的位置--->经历jmp一些列动作后，最后会到keyboardHandle函数中呢！
+//每次按键后，内核都会调用irqKeyboard进行处理
 .global irqKeyboard
 irqKeyboard:
 	pushl $0
