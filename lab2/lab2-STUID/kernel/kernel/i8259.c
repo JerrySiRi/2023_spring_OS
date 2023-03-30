@@ -6,8 +6,7 @@
 
 /* 初始化8259中断控制器：
  * 硬件中断IRQ从32号开始，自动发送EOI */
-void
-initIntr(void) {
+void initIntr(void) {
 	//outByte(PORT_PIC_MASTER + 1, 0xFF); // OCW1, Disable Master PIC all IRQs
 	//outByte(PORT_PIC_SLAVE + 1 , 0xFF); // OCW1, Disable Slave PIC all IRQs
 	outByte(PORT_PIC_MASTER, 0x11); // ICW1, Initialization command

@@ -29,7 +29,7 @@ static void setTrap(struct GateDescriptor *ptr, uint32_t selector, uint32_t offs
 	ptr->offset_15_0 = offset & 0xFFFF;//类型是unit32_t，右移动高位补0.----------------自己写的：(offset<<16)>>16;
         ptr->offset_31_16 = (offset>>16)&0xFFFF;//通过与上一个长度更小的【显示地把】长度给截断-------自己写的，不加0xfffff
         ptr->segment = selector<<3;//自动截断，回顾lab1中的gdt表，选择子存入寄存器后，低三位是留给特权级的！！！
-        ptr->present = 0x1;
+        ptr->present = 0x1;//在memory.h文件中，定义了宏来完成selector的处理呢！
         ptr->privilege_level = dpl;
         ptr->system = 0;
         ptr->type = 0xF;//也就是上面定义的TRAP_GATE_32
@@ -66,6 +66,7 @@ void initIdt() {
 	//static void setTrap(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl)函数声明
 
 	setTrap(idt + 0x8, SEG_KCODE, (uint32_t)irqDoubleFault, DPL_KERN);
+	//offset是在对应的段中找到偏移量，而在汇编.S中的标记就是位置，可以认为是偏移量拉！
 	// TODO: 填好剩下的表项
        	setTrap(idt + 0x8, SEG_KCODE, (uint32_t)irqDoubleFault, DPL_KERN);
 	 setTrap(idt + 0xa, SEG_KCODE, (uint32_t)irqInvalidTSS, DPL_KERN);
@@ -79,7 +80,8 @@ void initIdt() {
 	/* Exceptions with DPL = 3 */
 	// TODO: 填好剩下的表项 
 	 setTrap(idt + 0x21, SEG_KCODE, (uint32_t)irqKeyboard, DPL_KERN);
-	 setIntr(idt + 0x80, SEG_KCODE, (uint32_t)irqSyscall, DPL_USER); // for int 0x80, interrupt vector is 0x80, Interruption is disabled
+	 setIntr(idt + 0x80, SEG_KCODE, (uint32_t)irqSyscall, DPL_USER); 
+	 //系统调用的 int 0x80, 中断向量是 0x80, 在用户态，ring3发出的中断》DPL_USER=3
 	/* 写入IDT */
 	saveIdt(idt, sizeof(idt));
 }
