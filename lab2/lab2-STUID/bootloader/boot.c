@@ -15,6 +15,8 @@ void bootMain(void) {
 }
 */
 
+
+/*
 //【TASK1】加载程序装载内核
 void bootMain(void) {
 	int i = 0;
@@ -40,6 +42,41 @@ void bootMain(void) {
 	}
 
 	kMainEntry();//同lab1，一个什麼都不作的函数完成了地址跳转！
+}
+*/
+
+void bootMain(void) {
+
+
+	unsigned int elf = 0x200000;
+	
+	for (int i = 0; i < 200; i++) {
+		readSect((void*)(elf + i*512), 1+i);
+	}
+
+	// TODO: 填写kMainEntry、phoff、offset,加载Kernel
+	struct ELFHeader * eh = (struct ELFHeader *)elf;
+	struct ProgramHeader *ph = (struct ProgramHeader *)(elf + eh->phoff);
+	struct ProgramHeader *eph = (struct ProgramHeader *)(ph + eh->phnum);
+	int j = 0;
+	for(;ph < eph;ph++)
+	{
+		if(ph->type == 1)
+		{
+			for(j = 0;j < ph->filesz;j++)
+			{
+				*(unsigned char*)(ph->paddr+j) = *(unsigned char*)(elf+ph->off+j);
+			}
+			for(;j < ph->memsz;j++)
+			{
+				*(unsigned char*)(ph->paddr+j) = (unsigned char)0;
+			}
+		}
+	}
+	
+	void (*kMainEntry)(void);
+	kMainEntry = (void(*)(void))(((struct ELFHeader*)elf)->entry);
+	kMainEntry();
 }
 
 void waitDisk(void) { // waiting for disk

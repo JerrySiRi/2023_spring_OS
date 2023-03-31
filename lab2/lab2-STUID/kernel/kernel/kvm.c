@@ -57,6 +57,7 @@ user program is loaded to location 0x200000, i.e., 2MB
 size of user program is not greater than 200*512 bytes, i.e., 100KB
 */
 
+/*---自己写的
 void loadUMain(void) {
 	// TODO: 在内核中加载用户程序，参照bootloader加载内核的方式
 	int i = 0;
@@ -78,7 +79,40 @@ void loadUMain(void) {
 	}
 	enterUserSpace(uMainEntry);
 }
+*/
 
+void loadUMain(void) {
+	// TODO: 参照bootloader加载内核的方式
+
+	uint32_t elf = 0x200000;
+
+	for (int i = 0; i < 200; i++) {
+		readSect((void*)(elf + i*512), 201+i);
+	}
+
+	// TODO: 填写kMainEntry、phoff、offset
+	struct ELFHeader * eh = (struct ELFHeader *)elf;
+	struct ProgramHeader *ph = (struct ProgramHeader *)(elf + eh->phoff);
+	struct ProgramHeader *eph = (struct ProgramHeader *)(ph + eh->phnum);
+	int j = 0;
+	for(;ph < eph;ph++)
+	{
+		if(ph->type == 1)
+		{
+			for(j = 0;j < ph->filesz;j++)
+			{
+				*(unsigned char*)(ph->paddr+j) = *(unsigned char*)(elf+ph->off+j);
+			}
+			for(;j < ph->memsz;j++)
+			{
+				*(unsigned char*)(ph->paddr+j) = (unsigned char)0;
+			}
+		}
+	}
+
+	uint32_t uMainEntry = ((struct ELFHeader *)elf)->entry - 0x200000;
+	enterUserSpace(uMainEntry);
+}
 
 
 

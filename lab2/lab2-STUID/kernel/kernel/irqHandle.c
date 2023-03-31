@@ -41,6 +41,8 @@ void irqHandle(struct TrapFrame *tf) { // pointer tf = esp
 		case 0x80:
 			syscallHandle(tf);
 			break;
+		case -1:
+			break;
 		default:assert(0);
 	}
 }
@@ -164,13 +166,13 @@ void syscallRead(struct TrapFrame *tf){
 
 void syscallGetChar(struct TrapFrame *tf){
 	// TODO: 自由实现【【【【BUGBUGBUG！不是这个和下面两个函数的问题！】】】】
-int sel = USEL(SEG_UDATA);
+	int sel = USEL(SEG_UDATA);
 	char *str = (char*)tf->edx;
 	//int size = tf->ebx;
 	bufferHead=bufferTail=0;
 	while(1)
 	{
-		enableInterrupt();
+		enableInterrupt();//打开外部中断
 		if(keyBuffer[bufferTail]==13)
 		{
 			keyBuffer[bufferTail]='\n';
@@ -194,7 +196,7 @@ void syscallGetStr(struct TrapFrame *tf){
 	bufferHead=bufferTail=0;
 	while(1)
 	{
-		enableInterrupt();
+		enableInterrupt();//打开了外部中断
 		if(keyBuffer[bufferTail]==13)
 		{
 			keyBuffer[bufferTail]=0;
