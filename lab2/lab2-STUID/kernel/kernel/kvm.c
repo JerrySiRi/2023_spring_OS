@@ -63,13 +63,13 @@ void loadUMain(void) {
 	int phoff = 0x34;//elf头的大小是52字节，要先偏52。之后就是程序头表啦
 	int offset = 0x1000;//.text节的偏移
 	unsigned int elf = 0x200000;//ppt中说用户程序的.text段的起始是0x200000，也就是elf文件的起始啦
-	void (*uMainEntry)(void);//【函数指针！下面相当于告诉这个函数指针的位置，用两外一个什麼都不做，只有位置的函数来赋予它】
-	uMainEntry=(void(*)(void))0x200000;
+	//【函数指针！下面相当于告诉这个函数指针的位置，用两外一个什麼都不做，只有位置的函数来赋予它】
+	uint32_t uMainEntry=0x200000;
 
 	for (i = 0; i < 200; i++) {//磁盘分布：0号-bootloader。1-200号是内核部分。201-之后是用户程序部分
 		readSect((void*)(elf + i*512), 1+i);
 	}
-	kMainEntry =(void(*)(void))((struct ELFHeader*)elf)->entry;//内核程序的入口地址,函数的入口地址
+	uMainEntry =((struct ELFHeader*)elf)->entry;//内核程序的入口地址,函数的入口地址
 	phoff =((struct ELFHeader*)elf)->phoff;//程序头表的较elf的偏移位置
 	offset =((struct ProgramHeader *)(elf+phoff))->off;//【Segment在ELF文件中的偏移量】先找到程序头表的位置(elf+phoff)，再引用它。
 

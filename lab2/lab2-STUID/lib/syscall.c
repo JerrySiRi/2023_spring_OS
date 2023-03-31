@@ -61,13 +61,14 @@ char getChar(){ // 对应SYS_READ STD_IN
 	// TODO: 实现getChar函数，方式不限
 	//可以等按键输入完成的时候，将末尾字符通过eax寄存器传递回来【注意：eax在用户态向内核态传递参数的过程中，既扮演了参数的角色，又扮演了返回值的角色！】
 	//【使用通用寄存器作为中间桥梁就可以】
+	return syscall(SYS_READ,STD_IN,0,0,0,0);
 }
 
 void getStr(char *str, int size){ // 对应SYS_READ STD_STR
 	// TODO: 实现getStr函数，方式不限【涉及字符串的传递】
 	//【用通用寄存器作为中间桥梁不可以，因为字符串地址作为参数仍然涉及到了不同的数据段】
 	//【再看看lab2-ppt这个文件最后两页吧】
-
+	syscall(SYS_READ,STD_STR,(uint32_t)str,(uint32_t)size,0,0);
 	return;
 }
 
@@ -81,10 +82,10 @@ void printf(const char *format,...){
 	int i=0; // format index
 	char buffer[MAX_BUFFER_SIZE];
 	int count=0; // buffer index
-	int index=0; // parameter index-----好像也用不到诶
+	//int index=0; // parameter index-----好像也用不到诶
 	void *paraList=(void*)&format; // address of format in stack【是format指针本身自己的地址，在栈中！】
 //【【Review：调用函数的时候所有的参数都压入栈中了！所以printf可以不光使用PA中的va_list数据类型，更可以使用栈中参数的位置来进行访问参数！】】
-	int state=0; // 0: legal character; 1: '%'; 2: illegal format-------没必要用
+	//int state=0; // 0: legal character; 1: '%'; 2: illegal format-------没必要用
 	//以下是传入的四种类型的参数来让printf解析，且下面的都是参数的值或开始位置
 	int decimal=0;
 	uint32_t hexadecimal=0;
@@ -95,25 +96,25 @@ void printf(const char *format,...){
 		// TODO-在用户态【对参数进行处理】，并进行系统调用传入参数和调用号，并如下，系统调用向内核发送软中断请求。
 		buffer[count] = format[i];
 		count++;//默认都给count++啦
-		if(format[i]=="%"){
+		if(format[i] == '%'){//【【【BUG！C语言中字符串和字符是不一样的！字符可以表示成数字！字符串只能是指针！】】】
 			count--;//原来被放到buffer[count]位置的是%，不能被输出，得被覆盖
 			i++;//判断%后面的是什么，如%d，%s
 			//只有遇到了%，才会使用参数呢！
 			paraList +=sizeof(format);//把下一个被输出的字符串、十进制、十六进制的位置准备好
 			switch(format[i]){
-				case "d":
+				case 'd':
 					decimal = *(int*)paraList;
 					count = dec2Str(decimal, buffer, MAX_BUFFER_SIZE, count);
 					break;
-				case "x":
-					hexadecimal = *(uint32_t)paraList;
+				case 'x':
+					hexadecimal = *(uint32_t*)paraList;
 					count = hex2Str(hexadecimal, buffer, MAX_BUFFER_SIZE, count);
 					break;
-				case "s":
+				case 's':
 					string = *(char**)paraList;//此时paralist被解读一个指向char*的指针【二重指针啦】
 					count = str2Str(string, buffer, MAX_BUFFER_SIZE, count);
 					break;
-				case "c":
+				case 'c':
 					character = *(char*)paraList;
 					buffer[count] = character;
 					count ++;

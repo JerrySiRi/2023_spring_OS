@@ -1,6 +1,8 @@
 #include "x86.h"
 #include "device.h"
 
+
+//显示的行、列数。qumu屏幕能显示80*25大小的数据
 int displayRow = 0;
 int displayCol = 0;
 uint16_t displayMem[80*25];
@@ -14,6 +16,7 @@ void initVga() {
 	updateCursor(0, 0);
 }
 
+//80*25大小的屏幕被清空
 void clearScreen() {
 	int i = 0;
 	int pos = 0;
@@ -24,6 +27,8 @@ void clearScreen() {
 	}
 }
 
+
+//更新光表的位置
 void updateCursor(int row, int col){
 	int cursorPos = row * 80 + col;
 	outByte(0x3d4, 0x0f);
@@ -33,6 +38,8 @@ void updateCursor(int row, int col){
 	outByte(0x3d5, (unsigned char)((cursorPos>>8) & 0xff));
 }
 
+
+//滚屏
 void scrollScreen() {
 	int i = 0;
 	int pos = 0;
