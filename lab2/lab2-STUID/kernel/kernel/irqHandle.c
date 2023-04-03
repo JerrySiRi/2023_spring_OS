@@ -41,7 +41,7 @@ void irqHandle(struct TrapFrame *tf) { // pointer tf = esp
 		case 0x80:
 			syscallHandle(tf);
 			break;
-		case -1:
+		case -1://【梳理：一直是在运行汇编程序doIrq.S的，在得到是出错码的时候什麼都不作（汇编中定义的出错玛的中断向量号是-1）】
 			break;
 		default:assert(0);
 	}
@@ -67,6 +67,7 @@ void KeyboardHandle(struct TrapFrame *tf){
 		}
 	}else if(code == 0x1c){ // 回车符
 		// TODO: 处理回车情况
+		keyBuffer[bufferTail++]='\n';//这里必须要留下来的
 		displayRow += 1;
 		displayCol =0;
 		if(displayRow == 25){
@@ -78,7 +79,10 @@ void KeyboardHandle(struct TrapFrame *tf){
 
 	}else if(code < 0x81){ // 正常字符
 		// TODO: 注意输入的大小写的实现、不可打印字符的处理
-		putChar(getChar(code));//【串口输出接口putChar-serial.c文件中】、【键盘驱动接口-getChar-keyboard.c文件中】	
+		char character=getChar(code);//【串口输出接口putChar-serial.c文件中】、【键盘驱动接口-getChar-keyboard.c文件中】
+		putChar(character);
+		keyBuffer[bufferTail++]=character;
+		bufferTail%=MAX_KEYBUFFER_SIZE;	
 	}
 	updateCursor(displayRow, displayCol);//统一更新屏幕啦，不需上面每次更新！
 }
@@ -121,7 +125,7 @@ void syscallPrint(struct TrapFrame *tf) {
 //pos = ( 80 * displayRow+displyayCol)*2;
 //asm volatile("movw %0, (%1)"::"r"(data),"r"(pos+0xb8000));
 //要注意---碰到\n,换行，滚屏的处理，qemu模拟的屏幕的大小是80*25
-//以上三行代码会甬道的，用户调用printf之后就能在屏幕上进行输出啦
+//以上三行代码会用到的，用户调用printf之后就能在屏幕上进行输出啦
 
 		// TODO: 完成光标的维护和打印到显存
 		if(character == '\n'){
@@ -164,62 +168,66 @@ void syscallRead(struct TrapFrame *tf){
 	}
 }
 
+
 void syscallGetChar(struct TrapFrame *tf){
-	// TODO: 自由实现【【【【BUGBUGBUG！不是这个和下面两个函数的问题！】】】】
-	int sel = USEL(SEG_UDATA);
-	char *str = (char*)tf->edx;
-	//int size = tf->ebx;
-	bufferHead=bufferTail=0;
-	while(1)
-	{
-		enableInterrupt();//打开外部中断
-		if(keyBuffer[bufferTail]==13)
-		{
-			keyBuffer[bufferTail]='\n';
-			bufferTail--;
-			disableInterrupt();
-			break;
-		}
+	bufferHead=0;
+	bufferTail=0;
+	keyBuffer[bufferHead]=0;
+	keyBuffer[bufferHead+1]=0;
+	char c=0;
+	
+	while(c == 0){//一直等待用户输入，只有用户输入了c才不是0！
+		enableInterrupt();
+		c = keyBuffer[bufferHead];
+		disableInterrupt();
 	}
-	asm volatile("movw %0, %%es"::"m"(sel));
-	char character = keyBuffer[bufferHead];
-	if(character)
-		asm volatile("movb %0, %%es:(%1)"::"r"(character),"r"(str));
+	tf->eax=c;
+
+	char wait_enter=0;
+	while(wait_enter==0){//如果下一次拿到的keyBuffer中的内容是0，那么就不输出（用户输入完成但没有按enter呢！）
+		enableInterrupt();
+		wait_enter = keyBuffer[bufferHead+1];
+		disableInterrupt();
+	}
+	return;
 
 }
 
 void syscallGetStr(struct TrapFrame *tf){
 	// TODO: 自由实现
-	int sel = USEL(SEG_UDATA);
-	char *str = (char*)tf->edx;
-	int size = tf->ebx;
-	bufferHead=bufferTail=0;
-	while(1)
-	{
-		enableInterrupt();//打开了外部中断
-		if(keyBuffer[bufferTail]==13)
-		{
-			keyBuffer[bufferTail]=0;
-			disableInterrupt();
-			break;
-		}
+	char* str=(char*)(tf->edx);//str pointer
+	int size=(int)(tf->ebx);//str size
+	bufferHead=0;
+	bufferTail=0;
+	for(int j=0;j<MAX_KEYBUFFER_SIZE;j++)
+		keyBuffer[j]=0;//init
+	int i=0;
+
+	char tpc=0;
+	while(tpc!='\n' && i<size){
+
+		while(keyBuffer[i]==0)
+			enableInterrupt();
+		tpc=keyBuffer[i];
+		i++;
+		disableInterrupt();
 	}
-	asm volatile("movw %0, %%es"::"m"(sel));
-	int i;
-	for(i=0;i<size-1;)
-	{
-		if(bufferHead!=bufferTail)
-		{
-			char character = keyBuffer[bufferHead];
-			bufferHead=(bufferHead+1)%MAX_KEYBUFFER_SIZE;
-			if(character)
-			{
-				asm volatile("movb %0, %%es:(%1)"::"r"(character),"r"(str));
-				i++;
-			}
-		}
-		else
-			break;
+
+	int selector=USEL(SEG_UDATA);
+	asm volatile("movw %0, %%es"::"m"(selector));
+	int k=0;
+	for(int p=bufferHead;p<i-1;p++){
+		asm volatile("movb %0, %%es:(%1)"::"r"(keyBuffer[p]),"r"(str+k));
+		k++;
 	}
-	asm volatile("movb $0x0, %%es:(%0)"::"r"(str+i));
+	asm volatile("movb $0x00, %%es:(%0)"::"r"(str+i));
+	return;
 }
+
+
+//现在的问题：
+/*
+1、1+1=？的时候换了一行，》》在keybuffer中多给了一个\n?
+2、getstr无法实现大写功能
+
+*/
