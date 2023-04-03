@@ -67,7 +67,8 @@ void KeyboardHandle(struct TrapFrame *tf){
 		}
 	}else if(code == 0x1c){ // 回车符
 		// TODO: 处理回车情况
-		keyBuffer[bufferTail++]='\n';//这里必须要留下来的
+		keyBuffer[bufferTail]='\n';//这里必须要留下来的
+		bufferTail += 1;
 		displayRow += 1;
 		displayCol =0;
 		if(displayRow == 25){
@@ -81,8 +82,8 @@ void KeyboardHandle(struct TrapFrame *tf){
 		// TODO: 注意输入的大小写的实现、不可打印字符的处理
 		char character=getChar(code);//【串口输出接口putChar-serial.c文件中】、【键盘驱动接口-getChar-keyboard.c文件中】
 		putChar(character);
-		keyBuffer[bufferTail++]=character;
-		bufferTail%=MAX_KEYBUFFER_SIZE;	
+		keyBuffer[bufferTail++] = character;
+		bufferTail %= MAX_KEYBUFFER_SIZE;	
 	}
 	updateCursor(displayRow, displayCol);//统一更新屏幕啦，不需上面每次更新！
 }
@@ -181,10 +182,12 @@ void syscallGetChar(struct TrapFrame *tf){
 		c = keyBuffer[bufferHead];
 		disableInterrupt();
 	}
-	tf->eax=c;
+
+	tf->eax=c;//保存到tf【也就是函数的返回值-eax中！】
 
 	char wait_enter=0;
 	while(wait_enter==0){//如果下一次拿到的keyBuffer中的内容是0，那么就不输出（用户输入完成但没有按enter呢！）
+			     //如果下一次拿到了enter，那么就关闭中断，直接让printf输出（中断的嵌套）
 		enableInterrupt();
 		wait_enter = keyBuffer[bufferHead+1];
 		disableInterrupt();
@@ -195,28 +198,27 @@ void syscallGetChar(struct TrapFrame *tf){
 
 void syscallGetStr(struct TrapFrame *tf){
 	// TODO: 自由实现
-	char* str=(char*)(tf->edx);//str pointer
-	int size=(int)(tf->ebx);//str size
+	char* str=(char*)(tf->edx);//用一个新指针str保存读入的信息，而且和trapframe中的位置保持一致》》trapframe也可以得到同步的信息
+	int size=(int)(tf->ebx);//trapframe最多可以容纳的字符串数组的大小
 	bufferHead=0;
 	bufferTail=0;
 	for(int j=0;j<MAX_KEYBUFFER_SIZE;j++)
 		keyBuffer[j]=0;//init
+	
 	int i=0;
-
 	char tpc=0;
-	while(tpc!='\n' && i<size){
-
+	while(tpc!='\n' && i<size){//同getChar-一直等待enter或者读到大小的上限【中断一直是开-关-开-关-开-关......】
 		while(keyBuffer[i]==0)
 			enableInterrupt();
 		tpc=keyBuffer[i];
 		i++;
 		disableInterrupt();
 	}
-
+	//此时已经拿到了输入完成的keyuffer（大小不超上限）
 	int selector=USEL(SEG_UDATA);
 	asm volatile("movw %0, %%es"::"m"(selector));
 	int k=0;
-	for(int p=bufferHead;p<i-1;p++){
+	for(int p=bufferHead; p<i-1; p++){
 		asm volatile("movb %0, %%es:(%1)"::"r"(keyBuffer[p]),"r"(str+k));
 		k++;
 	}
@@ -225,9 +227,3 @@ void syscallGetStr(struct TrapFrame *tf){
 }
 
 
-//现在的问题：
-/*
-1、1+1=？的时候换了一行，》》在keybuffer中多给了一个\n?
-2、getstr无法实现大写功能
-
-*/

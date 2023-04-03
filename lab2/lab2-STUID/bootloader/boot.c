@@ -46,29 +46,21 @@ void bootMain(void) {
 */
 
 void bootMain(void) {
-
-
 	unsigned int elf = 0x200000;
-	
 	for (int i = 0; i < 200; i++) {
 		readSect((void*)(elf + i*512), 1+i);
 	}
-
 	// TODO: 填写kMainEntry、phoff、offset,加载Kernel
 	struct ELFHeader * eh = (struct ELFHeader *)elf;
 	struct ProgramHeader *ph = (struct ProgramHeader *)(elf + eh->phoff);
 	struct ProgramHeader *eph = (struct ProgramHeader *)(ph + eh->phnum);
 	int j = 0;
-	for(;ph < eph;ph++)
-	{
-		if(ph->type == 1)
-		{
-			for(j = 0;j < ph->filesz;j++)
-			{
+	for(; ph < eph; ph++){
+		if(ph->type == 1){  //同PA啦，只装载可以装载的段！
+			for(j = 0;j < ph->filesz;j++){
 				*(unsigned char*)(ph->paddr+j) = *(unsigned char*)(elf+ph->off+j);
 			}
-			for(;j < ph->memsz;j++)
-			{
+			for(;j < ph->memsz;j++){//在上面可装入段所有内容完成装入后，内存中剩余的其它地方【.bss节】都初始化成0
 				*(unsigned char*)(ph->paddr+j) = (unsigned char)0;
 			}
 		}

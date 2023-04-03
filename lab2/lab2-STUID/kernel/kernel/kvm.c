@@ -83,13 +83,10 @@ void loadUMain(void) {
 
 void loadUMain(void) {
 	// TODO: 参照bootloader加载内核的方式
-
 	uint32_t elf = 0x200000;
-
 	for (int i = 0; i < 200; i++) {
 		readSect((void*)(elf + i*512), 201+i);
 	}
-
 	// TODO: 填写kMainEntry、phoff、offset
 	struct ELFHeader * eh = (struct ELFHeader *)elf;
 	struct ProgramHeader *ph = (struct ProgramHeader *)(elf + eh->phoff);
