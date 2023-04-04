@@ -59,52 +59,51 @@ void KeyboardHandle(struct TrapFrame *tf){
 	int pos=0;
 	uint16_t data=0;
 	if(code == 0xe){ // 退格符
-		// TODO: 要求只能退格用户键盘输入的字符串，且最多退到当行行首
-		if(displayCol > 0 && displayCol>tail){
+		//  要求只能退格用户键盘输入的字符串，且最多退到当行行首
+		if(displayCol>0&&displayCol>tail){
 			displayCol-=1;
-			pos=(displayRow*80+displayCol)*2;
-			asm volatile("movw %0,(%1)"::"r"(data),"r"(pos+0xb8000));
-			updateCursor(displayRow,displayCol);
+			data = 0 | (0x0c << 8);
+			pos = (80*displayRow+displayCol)*2;
+			asm volatile("movw %0, (%1)"::"r"(data),"r"(pos+0xb8000));
+			
 		}
 	}else if(code == 0x1c){ // 回车符
-		// TODO: 处理回车情况
-		keyBuffer[bufferTail]='\n';//这里必须要留下来的
-		bufferTail += 1;
-		displayRow += 1;
-		displayCol =0;
+		// 处理回车情况
+		keyBuffer[bufferTail++]='\n';//在qemu中进行换行
+		displayRow+=1;
+		displayCol=0;
 		tail=0;
-		if(displayRow == 25){
-			displayRow =24;
-			displayCol =0;
-			scrollScreen();//当前屏幕因为换行而满了，要进行滚屏
-		}
-		putChar('\n');
-
-	}else if(code < 0x81){ // 正常字符
-		// TODO: 注意输入的大小写的实现、不可打印字符的处理
-		char character=getChar(code);//【串口输出接口putChar-serial.c文件中】、【键盘驱动接口-getChar-keyboard.c文件中】
-		putChar(character);
-		keyBuffer[bufferTail++] = character;
-		bufferTail %= MAX_KEYBUFFER_SIZE;	
-		uint16_t data = character | (0x0c << 8);
-		int pos = ( 80 * displayRow+displayCol)*2;
-		asm volatile("movw %0, (%1)"::"r"(data),"r"(pos+0xb8000));
-		displayCol +=1;
-		if(displayCol == 80){
-			displayRow++;
+		if(displayRow==25){
+			displayRow=24;
 			displayCol=0;
-			if(displayRow ==25){
-				displayRow=24;
-				displayCol=0;
-				scrollScreen();
-			}
-
+			scrollScreen();
 		}
-		
+		putChar('\n');//在串口进行换行
+	}else if(code < 0x81){ // 正常字符
+		// 注意输入的大小写的实现、不可打印字符的处理
+		char character=getChar(code);
+		if(character!=0){
+			putChar(character);//向串口中进行输出字符
+			keyBuffer[bufferTail++]=character;//向keyuffer中存字符，未来向qemu中输入
+			bufferTail%=MAX_KEYBUFFER_SIZE;
+			data=character|(0x0c<<8);
+			pos=(80*displayRow+displayCol)*2;
+			asm volatile("movw %0, (%1)"::"r"(data),"r"(pos+0xb8000));
+			displayCol+=1;
+			if(displayCol==80){
+				displayCol=0;
+				displayRow++;
+				if(displayRow==25){
+					displayRow=24;
+					displayCol=0;
+					scrollScreen();
+				}
+			}
+		}
 	}
-	updateCursor(displayRow, displayCol);//统一更新屏幕啦，不需上面每次更新！
+	updateCursor(displayRow, displayCol);
+	
 }
-
 void syscallHandle(struct TrapFrame *tf) {
 	switch(tf->eax) { // syscall number
 		case 0:
