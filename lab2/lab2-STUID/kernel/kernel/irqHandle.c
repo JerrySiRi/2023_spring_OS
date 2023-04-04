@@ -20,6 +20,7 @@ void syscallRead(struct TrapFrame *tf);
 void syscallGetChar(struct TrapFrame *tf);
 void syscallGetStr(struct TrapFrame *tf);
 
+int tail;//指示当前用户输入的位置
 
 void irqHandle(struct TrapFrame *tf) { // pointer tf = esp
 	/*
@@ -59,7 +60,7 @@ void KeyboardHandle(struct TrapFrame *tf){
 	uint16_t data=0;
 	if(code == 0xe){ // 退格符
 		// TODO: 要求只能退格用户键盘输入的字符串，且最多退到当行行首
-		if(displayCol > 0){
+		if(displayCol > 0 && displayCol>tail){
 			displayCol-=1;
 			pos=(displayRow*80+displayCol)*2;
 			asm volatile("movw %0,(%1)"::"r"(data),"r"(pos+0xb8000));
@@ -71,6 +72,7 @@ void KeyboardHandle(struct TrapFrame *tf){
 		bufferTail += 1;
 		displayRow += 1;
 		displayCol =0;
+		tail=0;
 		if(displayRow == 25){
 			displayRow =24;
 			displayCol =0;
@@ -84,6 +86,21 @@ void KeyboardHandle(struct TrapFrame *tf){
 		putChar(character);
 		keyBuffer[bufferTail++] = character;
 		bufferTail %= MAX_KEYBUFFER_SIZE;	
+		uint16_t data = character | (0x0c << 8);
+		int pos = ( 80 * displayRow+displayCol)*2;
+		asm volatile("movw %0, (%1)"::"r"(data),"r"(pos+0xb8000));
+		displayCol +=1;
+		if(displayCol == 80){
+			displayRow++;
+			displayCol=0;
+			if(displayRow ==25){
+				displayRow=24;
+				displayCol=0;
+				scrollScreen();
+			}
+
+		}
+		
 	}
 	updateCursor(displayRow, displayCol);//统一更新屏幕啦，不需上面每次更新！
 }
@@ -123,7 +140,7 @@ void syscallPrint(struct TrapFrame *tf) {
 		asm volatile("movb %%es:(%1), %0":"=r"(character):"r"(str+i));//功能：把printf的字符串的str的第i个字符赋值给character
 
 //data = character | (0x0c << 8);
-//pos = ( 80 * displayRow+displyayCol)*2;
+//pos = ( 80 * displayRow+displayCol)*2;
 //asm volatile("movw %0, (%1)"::"r"(data),"r"(pos+0xb8000));
 //要注意---碰到\n,换行，滚屏的处理，qemu模拟的屏幕的大小是80*25
 //以上三行代码会用到的，用户调用printf之后就能在屏幕上进行输出啦
@@ -154,6 +171,7 @@ void syscallPrint(struct TrapFrame *tf) {
 			}
 		}
 	}
+	tail=displayCol;
 	updateCursor(displayRow, displayCol);
 }
 
@@ -225,5 +243,4 @@ void syscallGetStr(struct TrapFrame *tf){
 	asm volatile("movb $0x00, %%es:(%0)"::"r"(str+i));
 	return;
 }
-
 

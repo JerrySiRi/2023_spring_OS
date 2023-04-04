@@ -106,7 +106,6 @@ void loadUMain(void) {
 			}
 		}
 	}
-
 	uint32_t uMainEntry = ((struct ELFHeader *)elf)->entry - 0x200000;
 	enterUserSpace(uMainEntry);
 }

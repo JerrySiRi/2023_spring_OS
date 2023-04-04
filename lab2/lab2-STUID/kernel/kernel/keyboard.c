@@ -186,6 +186,7 @@ uint32_t getKeyCode() {
 			case (KLSH_P+0x80): // release left shift
 			case KRSH_P: // press right shift
 			case (KRSH_P+0x80): // release right shift
+				//putChar('a');
 				switchKeyboard();
 				break;
 			case KCAP_P: // press capslock
