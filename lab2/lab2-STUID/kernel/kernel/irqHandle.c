@@ -199,9 +199,7 @@ void syscallGetChar(struct TrapFrame *tf){
 		c = keyBuffer[bufferHead];
 		disableInterrupt();
 	}
-
 	tf->eax=c;//保存到tf【也就是函数的返回值-eax中！】
-
 	char wait_enter=0;
 	while(wait_enter==0){//如果下一次拿到的keyBuffer中的内容是0，那么就不输出（用户输入完成但没有按enter呢！）
 			     //如果下一次拿到了enter，那么就关闭中断，直接让printf输出（中断的嵌套）
