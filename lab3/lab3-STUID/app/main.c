@@ -1,6 +1,6 @@
 #include "lib.h"
 #include "types.h"
-
+#include "assert.h"
 int data = 0;
 
 int uEntry(void) {
@@ -20,7 +20,7 @@ int uEntry(void) {
 	
 	//printf("printf test begin...\n");
 	//printf("Task switching test begin...\n");
-	printf("okok");
+	//assert(0);
 	int ret = fork();
 	int i = 8;
 	if (ret == 0) {
