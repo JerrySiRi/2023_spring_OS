@@ -20,7 +20,7 @@ int uEntry(void) {
 	
 	//printf("printf test begin...\n");
 	//printf("Task switching test begin...\n");
-	
+	printf("okok");
 	int ret = fork();
 	int i = 8;
 	if (ret == 0) {
@@ -28,8 +28,8 @@ int uEntry(void) {
 		while( i != 0) {
 			i --;
 			printf("Child Process: Pong %d, %d;\n", data, i);
-			//sleep(1);
-			sleep(128);
+			sleep(1);
+			//sleep(128);
 		}
 		exit();
 	}
@@ -38,8 +38,8 @@ int uEntry(void) {
 		while( i != 0) {
 			i --;
 			printf("Father Process: Ping %d, %d;\n", data, i);
-			//sleep(1);
-			sleep(128);
+			sleep(1);
+			//sleep(128);
 		}
 		exit();
 	}

@@ -1,15 +1,25 @@
 #include "device.h"
 #include "x86.h"
-
+#include "common.h"
+extern TSS tss;
 extern int displayRow;
 extern int displayCol;
 
+extern ProcessTable pcb[MAX_PCB_NUM];
+extern int current; // current process
+
 void GProtectFaultHandle(struct StackFrame *sf);
+
+void timerHandle(struct StackFrame *sf);
 
 void syscallHandle(struct StackFrame *sf);
 
 void syscallWrite(struct StackFrame *sf);
 void syscallPrint(struct StackFrame *sf);
+void syscallFork(struct StackFrame *sf);
+void syscallExec(struct StackFrame *sf);
+void syscallSleep(struct StackFrame *sf);
+void syscallExit(struct StackFrame *sf);
 
 void irqHandle(struct StackFrame *sf) {  // pointer sf = esp
     /* Reassign segment register */
@@ -63,8 +73,72 @@ void syscallHandle(struct StackFrame *sf) {
     }
 }
 
+
+void memcpy(void* dst,void* buffer,size_t size){
+	for(uint32_t j=0;j<size;j++){
+		*(uint8_t*)(dst+j)=*(uint8_t*)(buffer+j);
+	}
+}
+
+
+static int front=0;
+static int rear=0;
+static int tag=0;
+static int ra_list[MAX_PCB_NUM];//状态为STATE_RUNNABLE进程的下标，用循环数组来模拟链表的实现！
+
+
 void timerHandle(struct StackFrame *sf) {
     // TODO in lab3
+	for(int i=0;i<MAX_PCB_NUM;i++){//【对阻塞态的进程操作】
+		if(pcb[i].state==STATE_BLOCKED && pcb[i].sleepTime>1)
+			pcb[i].sleepTime--;
+		else if (pcb[i].state==STATE_BLOCKED && pcb[i].sleepTime==1){
+			pcb[i].state=STATE_RUNNABLE;//[阻塞态->就绪态，装入ra_list中！！！]
+			pcb[i].sleepTime=0;
+			if(!(rear==front && tag)){//ra_list队列中没有满
+				tag=1;
+				ra_list[rear]=i;
+				rear=(rear+1)%MAX_PCB_NUM;	
+			}	
+		}
+	}
+	if(pcb[current].state==STATE_RUNNING && pcb[current].timeCount < MAX_TIME_COUNT )//【对运行态的当前进程操作！】
+		pcb[current].timeCount++;
+	else if (pcb[current].state==STATE_RUNNING && pcb[current].timeCount == MAX_TIME_COUNT){
+		//XXX：对老进程进行放入ra_list的操作
+		pcb[current].state=STATE_RUNNABLE;//[运行态->就绪态，装入ra_list中！！！！]
+		if(!(rear==front && tag)){//ra_list队列中没有满
+                                tag=1;
+                                ra_list[rear]=current;
+                                rear=(rear+1)%MAX_PCB_NUM;
+                        }
+
+		//XXX：判断有没有就绪态。对current进行更新
+		if(!(rear==front&&!tag)){//当前可运行的队列不是空的！
+			current=ra_list[front];//[就绪态->运行态，从ra_list中拿出来！！！]
+			front=(front+1)%MAX_PCB_NUM;
+			tag=0;
+		}
+		else{//当前可运行的队列是空的，要来换乘pcb[0]啦！
+			current=0;//换到pcb[0]中呢！
+		}
+
+
+		//XXX：对新进程current进行切换啦！！！
+			pcb[current].state=STATE_RUNNING;
+                        pcb[current].timeCount=0;//仿照kvm.c对第一个用户进程初始化的操作呢！
+                        pcb[current].sleepTime=0;
+                        uint32_t tmpStackTop=pcb[current].stackTop;
+                        tss.esp0=(uint32_t)&(pcb[current].stackTop);
+                        asm volatile("movl %0,%%esp"::"m"(tmpStackTop));
+                        asm volatile("popl %gs");
+                        asm volatile("popl %fs");
+                        asm volatile("popl %es");
+                        asm volatile("popl %ds");
+                        asm volatile("popal");
+                        asm volatile("addl $8,%esp");
+                        asm volatile("iret");	
+	}
 }
 
 void syscallWrite(struct StackFrame *sf) {
@@ -144,7 +218,7 @@ void syscallFork(struct StackFrame *sf) {
 		}
 	}
 	if(child == MAX_PCB_NUM)//没有空位置
-		{sf->eax=-1;return;//此时fork失败了！在父进程处返回-1啦！ }
+		{sf->eax=-1;return;}//此时fork失败了！在父进程处返回-1啦！ 
 
 	//XXX:step2
 	//【现在child就是子进程在pcb中的位置啦！】
@@ -160,13 +234,18 @@ void syscallFork(struct StackFrame *sf) {
 	pcb[child].sleepTime = 0;
 	pcb[child].timeCount = 0;
 	pcb[child].state = STATE_RUNNABLE;
+	if(!(front==rear && tag)){//此时RUNNABLE列表没有满，当然，最多创建16个啦，不然就pcb没有空位置，直接fork失败返回啦！
+		ra_list[rear]=child;
+		rear=(rear+1)%MAX_PCB_NUM;
+		tag=1;
+	}
 	//当前子进程在GDT中的下标为，  【代码段】 1（空）+ 2*child 【数据段】1（空）+2*child+1
-	pcb[i].regs.cs = USEL(1+2*child);//代码
-	pcb[i].regs.ds = USEL(2+2*child);//数据
-	pcb[i].regs.es = USEL(2+2*child);
-	pcb[i].regs.fs = USEL(2+2*child);
-	pcb[i].regs.gs = USEL(2+2*child);
-	pcb[i].regs.ss = USEL(2+2*child); 
+	pcb[child].regs.cs = USEL(1+2*child);//代码
+	pcb[child].regs.ds = USEL(2+2*child);//数据
+	pcb[child].regs.es = USEL(2+2*child);
+	pcb[child].regs.fs = USEL(2+2*child);
+	pcb[child].regs.gs = USEL(2+2*child);
+	pcb[child].regs.ss = USEL(2+2*child); 
 	pcb[child].stackTop = (uint32_t)&(pcb[child].regs);//本进程的上下文信息全在regs之中了
 	pcb[child].prevStackTop = (uint32_t)&(pcb[child].stackTop);//中断嵌套时保存待恢复的栈顶信息（用不到呢！）
 
