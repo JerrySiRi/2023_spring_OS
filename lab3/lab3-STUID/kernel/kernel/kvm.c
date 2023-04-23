@@ -51,12 +51,6 @@ void initSeg() { // setup kernel segements
 uint32_t loadUMain(void);
 
 
-uint8_t rest[MAX_PCB_NUM];
-uint8_t front;
-uint8_t rear;
-uint8_t tag;
-
-
 void initProc() {
 	int i;
 	for (i = 0; i < MAX_PCB_NUM; i++) {
