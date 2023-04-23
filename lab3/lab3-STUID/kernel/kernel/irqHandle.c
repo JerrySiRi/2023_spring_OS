@@ -82,9 +82,10 @@ void memcpy(void* dst,void* buffer,size_t size){
 
 
 static int front=0;
-static int rear=0;
+static int rear=1;
 static int tag=0;
-static int ra_list[MAX_PCB_NUM];//状态为STATE_RUNNABLE进程的下标，用循环数组来模拟链表的实现！
+static int ra_list[MAX_PCB_NUM]={1,0,0,0};//状态为STATE_RUNNABLE进程的下标，用循环数组来模拟链表的实现！
+static int index;
 
 
 void timerHandle(struct StackFrame *sf) {
@@ -101,45 +102,41 @@ void timerHandle(struct StackFrame *sf) {
 				rear=(rear+1)%MAX_PCB_NUM;	
 			}	
 		}
+
+
 	}
-	if(pcb[current].state==STATE_RUNNING && pcb[current].timeCount < MAX_TIME_COUNT )//【对运行态的当前进程操作！】
+
+	if(pcb[current].state==STATE_RUNNING){//【对运行态的进程操作，也即current】
 		pcb[current].timeCount++;
-	else if (pcb[current].state==STATE_RUNNING && pcb[current].timeCount == MAX_TIME_COUNT){
-		//XXX：对老进程进行放入ra_list的操作
-		pcb[current].state=STATE_RUNNABLE;//[运行态->就绪态，装入ra_list中！！！！]
-		if(!(rear==front && tag)){//ra_list队列中没有满
-                                tag=1;
-                                ra_list[rear]=current;
-                                rear=(rear+1)%MAX_PCB_NUM;
-                        }
-
-		//XXX：判断有没有就绪态。对current进行更新
-		if(!(rear==front&&!tag)){//当前可运行的队列不是空的！
-			current=ra_list[front];//[就绪态->运行态，从ra_list中拿出来！！！]
-			front=(front+1)%MAX_PCB_NUM;
-			tag=0;
-		}
-		else{//当前可运行的队列是空的，要来换乘pcb[0]啦！
-			current=0;//换到pcb[0]中呢！
-		}
-
-
-		//XXX：对新进程current进行切换啦！！！
-			pcb[current].state=STATE_RUNNING;
-                        pcb[current].timeCount=0;//仿照kvm.c对第一个用户进程初始化的操作呢！
-                        pcb[current].sleepTime=0;
-                        uint32_t tmpStackTop=pcb[current].stackTop;
-                        tss.esp0=(uint32_t)&(pcb[current].stackTop);
-                        asm volatile("movl %0,%%esp"::"m"(tmpStackTop));
-                        asm volatile("popl %gs");
-                        asm volatile("popl %fs");
-                        asm volatile("popl %es");
-                        asm volatile("popl %ds");
-                        asm volatile("popal");
-                        asm volatile("addl $8,%esp");
-                        asm volatile("iret");	
+		if(pcb[current].timeCount == MAX_TIME_COUNT)
+			return;
 	}
+
+	for(index=(current+1)%MAX_PCB_NUM; index!=current; index=(index+1)%MAX_PCB_NUM){
+		if(pcb[index].state==STATE_RUNNABLE)//找到一个就绪态的进程为止,更新index！
+			break;
+	}
+	if(pcb[current].state==STATE_RUNNING){//【【【BUG！！！！当前进程可能不是运行态的！！！这一条if判断不能去掉！！！】】】
+		pcb[current].state=STATE_RUNNABLE;
+		pcb[current].timeCount=0;
+	}
+	current=index;
+	pcb[current].state=STATE_RUNNING;
+	pcb[current].timeCount=0;
+	uint32_t temp=pcb[current].stackTop;
+	pcb[current].stackTop=pcb[current].prevStackTop;
+	tss.esp0=(uint32_t)&(pcb[current].stackTop);
+	asm volatile("movl %0, %%esp"::"m"(temp)); // switch kernel stack
+	asm volatile("popl %gs");
+	asm volatile("popl %fs");
+	asm volatile("popl %es");
+	asm volatile("popl %ds");
+	asm volatile("popal");
+	asm volatile("addl $8, %esp");
+	asm volatile("iret");	
+
 }
+
 
 void syscallWrite(struct StackFrame *sf) {
     switch (sf->ecx) {  // file descriptor
