@@ -50,6 +50,13 @@ void initSeg() { // setup kernel segements
 
 uint32_t loadUMain(void);
 
+
+uint8_t rest[MAX_PCB_NUM];
+uint8_t front;
+uint8_t rear;
+uint8_t tag;
+
+
 void initProc() {
 	int i;
 	for (i = 0; i < MAX_PCB_NUM; i++) {
@@ -80,6 +87,7 @@ void initProc() {
 	pcb[1].regs.es = USEL(4);
 	pcb[1].regs.fs = USEL(4);
 	pcb[1].regs.gs = USEL(4);
+
 
 	current = 0; // kernel idle process
 	asm volatile("movl %0, %%esp"::"m"(pcb[0].stackTop)); // switch to kernel stack for kernel idle process
