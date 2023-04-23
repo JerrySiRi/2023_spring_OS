@@ -138,6 +138,7 @@ void timerHandle(struct StackFrame *sf) {
 }
 
 
+
 void syscallWrite(struct StackFrame *sf) {
     switch (sf->ecx) {  // file descriptor
         case 0:
@@ -243,6 +244,7 @@ void syscallFork(struct StackFrame *sf) {
 	pcb[child].regs.fs = USEL(2+2*child);
 	pcb[child].regs.gs = USEL(2+2*child);
 	pcb[child].regs.ss = USEL(2+2*child); 
+	pcb[child].regs.eflags = pcb[current].regs.eflags | 0x200;
 	pcb[child].stackTop = (uint32_t)&(pcb[child].regs);//本进程的上下文信息全在regs之中了
 	pcb[child].prevStackTop = (uint32_t)&(pcb[child].stackTop);//中断嵌套时保存待恢复的栈顶信息（用不到呢！）
 
