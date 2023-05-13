@@ -195,9 +195,8 @@ void keyboardHandle(struct StackFrame *sf) {//【格式化读入的预先处理-
 	updateCursor(displayRow, displayCol);
 	
 	//【功能2：V()操作！1、唤醒阻塞在dev[STD_IN]上的一个进程 2、创建资源】最多只能有一个进程被阻塞在dev[STD_IN]上
-	dev[STD_IN].value ++;//此时有buffer的输入，有资源可以读入啦！
-
-	if (dev[STD_IN].state == 1 && dev[STD_IN].value <= 0) { // with process blocked,此时需要唤醒他
+	//此时有buffer的输入，有资源可以读入啦！
+	if (dev[STD_IN].state == 1 && dev[STD_IN].value < 0) { // with process blocked,此时需要唤醒他
 		// TODO: deal with blocked situation
 		//【先把他从阻塞列表中拿出来】
 		ProcessTable* pt;
@@ -208,6 +207,7 @@ void keyboardHandle(struct StackFrame *sf) {//【格式化读入的预先处理-
 		pt->state=STATE_RUNNABLE;
 		//pt->timecount=MAX_TIME_COUNT;这两行最好别加，为了保证唤醒后的运行逻辑不发生过改变，原来时间片剩多长时间就运行多久！
 		//pt->sleeptime=0;--------------加这两行也不会错，只是调度会和期望的不同
+		dev[STD_IN].value = 1;//【有一个字符可以读入！！！前面唤醒的进程可以用来读他！】
 		asm volatile("int $0x20");//符合逻辑，此时有一个进程被唤醒，发时间中断，看调度器会不会调度他！---------不加应该也没事
 	}
 	
@@ -307,9 +307,13 @@ void syscallReadStdIn(struct StackFrame *sf) {
 	// TODO: complete `stdin`
 	//1、P()操作，消耗资源 + 如果dev[STD_IN].value=0，当前进程阻塞
 	//2、读keybuffer中的数据
-	dev[STD_IN].value--;
-
-	if(dev[STD_IN].state==1 && dev[STD_IN].value<0){//加入阻塞列表+修改信息
+	//dev[STD_IN].value--;【此时value>0的时候是可以读入的字符数量---可以全读完！！！！！value<0的时候是阻塞的数量】
+	
+	if(dev[STD_IN].state ==1 && dev[STD_IN].value < 0){//已经有一个进程阻塞！而且当前又有进程想读》》多个想读，阻塞 && 而且没有资源
+        	pcb[current].regs.eax = -1;//XXX：如果多个进程想读，后来的进程返回-1。【下面其他情况返回实际读取的字符数】
+        	return;
+    	}
+	else if(dev[STD_IN].state==1 && dev[STD_IN].value==0){//一个进程想读而阻塞 && 而且没有资源。加入阻塞列表+修改信息
 		pcb[current].blocked.next = dev[STD_IN].pcb.next;
 		pcb[current].blocked.prev = &(dev[STD_IN].pcb);
 		dev[STD_IN].pcb.next = &(pcb[current].blocked);
@@ -317,8 +321,9 @@ void syscallReadStdIn(struct StackFrame *sf) {
 
 		pcb[current].state = STATE_BLOCKED;
 		pcb[current].sleepTime = 0;
+		pcb[current].regs.eax = 0;//XXX：一个进程阻塞&没有资源，返回0
 		asm volatile("int $0x20");
-
+		return ;
 	}
 
 	int sel = sf->ds;
@@ -333,8 +338,8 @@ void syscallReadStdIn(struct StackFrame *sf) {
 		asm volatile("movb %0, %%es:(%1)" ::"r"(character), "r"(str + i));
 	}
 	asm volatile("movb $0x00, %%es:(%0)" ::"r"(str + i));
-	pcb[current].regs.eax = i;
-
+	pcb[current].regs.eax = i;//XXX：没有进程阻塞&有资源，返回读入的个数！
+	dev[STD_IN].value=0;
 	return ;
 
 
