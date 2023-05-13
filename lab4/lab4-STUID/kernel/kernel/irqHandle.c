@@ -140,19 +140,77 @@ void timerHandle(struct StackFrame *sf) {
 	}
 }
 
-void keyboardHandle(struct StackFrame *sf) {
-	ProcessTable *pt = NULL;
+void keyboardHandle(struct StackFrame *sf) {//【格式化读入的预先处理--放入buffer之中】
+//每按下一个按键就会触发一次键盘中断，每次只需要把恩下的那一个键的keycode放入buffer之中即可！
 	uint32_t keyCode = getKeyCode();
 	if (keyCode == 0) // illegal keyCode
 		return;
+	//【功能1：把读取到的keycode放入keybuffer之中】------Lab2中的实现
 	//putChar(getChar(keyCode));
-	keyBuffer[bufferTail] = keyCode;
-	bufferTail=(bufferTail+1)%MAX_KEYBUFFER_SIZE;
-
-	if (dev[STD_IN].value < 0) { // with process blocked
-		// TODO: deal with blocked situation
+	uint32_t code = getKeyCode();
+	int pos=0;
+	uint16_t data=0;
+	if(code == 0xe){ // 退格符
+		//  要求只能退格用户键盘输入的字符串，且最多退到当行行首
+		if(displayCol>0){
+			displayCol-=1;
+			data = 0 | (0x0c << 8);
+			pos = (80*displayRow+displayCol)*2;
+			asm volatile("movw %0, (%1)"::"r"(data),"r"(pos+0xb8000));
+			
+		}
+	}else if(code == 0x1c){ // 回车符
+		// 处理回车情况
+		keyBuffer[bufferTail++]='\n';//在qemu中进行换行
+		displayRow+=1;
+		displayCol=0;
+		if(displayRow==25){
+			displayRow=24;
+			displayCol=0;
+			scrollScreen();
+		}
+		putChar('\n');//在串口进行换行
+	}else if(code < 0x81){ // 正常字符
+		// 注意输入的大小写的实现、不可打印字符的处理
+		char character=getChar(code);
+		if(character!=0){
+			putChar(character);//向串口中进行输出字符
+			keyBuffer[bufferTail++]=character;//向keyuffer中存字符，未来向qemu中输入
+			bufferTail%=MAX_KEYBUFFER_SIZE;
+			data=character|(0x0c<<8);
+			pos=(80*displayRow+displayCol)*2;
+			asm volatile("movw %0, (%1)"::"r"(data),"r"(pos+0xb8000));
+			displayCol+=1;
+			if(displayCol==80){
+				displayCol=0;
+				displayRow++;
+				if(displayRow==25){
+					displayRow=24;
+					displayCol=0;
+					scrollScreen();
+				}
+			}
+		}
 	}
+	updateCursor(displayRow, displayCol);
+	
+	//【功能2：V()操作！1、唤醒阻塞在dev[STD_IN]上的一个进程 2、创建资源】最多只能有一个进程被阻塞在dev[STD_IN]上
+	dev[STD_IN].value ++;//此时有buffer的输入，有资源可以读入啦！
 
+	if (dev[STD_IN].state == 1 && dev[STD_IN].value <= 0) { // with process blocked,此时需要唤醒他
+		// TODO: deal with blocked situation
+		//【先把他从阻塞列表中拿出来】
+		ProcessTable* pt;
+		pt = (ProcessTable*)((uint32_t)(dev[STD_IN].pcb.prev) - (uint32_t)&(((ProcessTable*)0)->blocked));
+		dev[STD_IN].pcb.prev = (dev[STD_IN].pcb.prev)->prev;
+		(dev[STD_IN].pcb.prev)->next = &(dev[STD_IN].pcb);
+		//【再对他的信息进行修改】
+		pt->state=STATE_RUNNABLE;
+		//pt->timecount=MAX_TIME_COUNT;这两行最好别加，为了保证唤醒后的运行逻辑不发生过改变，原来时间片剩多长时间就运行多久！
+		//pt->sleeptime=0;--------------加这两行也不会错，只是调度会和期望的不同
+		asm volatile("int $0x20");//符合逻辑，此时有一个进程被唤醒，发时间中断，看调度器会不会调度他！---------不加应该也没事
+	}
+	
 	return;
 }
 
@@ -234,7 +292,7 @@ void syscallWriteStdOut(struct StackFrame *sf) {
 	return;
 }
 
-void syscallRead(struct StackFrame *sf) {
+void syscallRead(struct StackFrame *sf) {//【格式化读入】
 	switch(sf->ecx) {
 		case STD_IN:
 			if (dev[STD_IN].state == 1)
@@ -247,6 +305,39 @@ void syscallRead(struct StackFrame *sf) {
 
 void syscallReadStdIn(struct StackFrame *sf) {
 	// TODO: complete `stdin`
+	//1、P()操作，消耗资源 + 如果dev[STD_IN].value=0，当前进程阻塞
+	//2、读keybuffer中的数据
+	dev[STD_IN].value--;
+
+	if(dev[STD_IN].state==1 && dev[STD_IN].value<0){//加入阻塞列表+修改信息
+		pcb[current].blocked.next = dev[STD_IN].pcb.next;
+		pcb[current].blocked.prev = &(dev[STD_IN].pcb);
+		dev[STD_IN].pcb.next = &(pcb[current].blocked);
+		(pcb[current].blocked.next)->prev = &(pcb[current].blocked);
+
+		pcb[current].state = STATE_BLOCKED;
+		pcb[current].sleepTime = 0;
+		asm volatile("int $0x20");
+
+	}
+
+	int sel = sf->ds;
+	char *str = (char *)sf->edx;
+	int size = sf->ebx;
+	int i = 0;
+	char character = 0;
+	asm volatile("movw %0, %%es" ::"m"(sel));
+	for (i = 0; i < size && bufferHead != bufferTail; i++){
+		character = keyBuffer[bufferHead];
+		bufferHead = (bufferHead + 1) % MAX_KEYBUFFER_SIZE;
+		asm volatile("movb %0, %%es:(%1)" ::"r"(character), "r"(str + i));
+	}
+	asm volatile("movb $0x00, %%es:(%0)" ::"r"(str + i));
+	pcb[current].regs.eax = i;
+
+	return ;
+
+
 }
 
 void syscallFork(struct StackFrame *sf) {
@@ -356,7 +447,7 @@ void syscallSemWait(struct StackFrame *sf) {
 
 void syscallSemPost(struct StackFrame *sf) {
 	int i = (int)sf->edx;
-	ProcessTable *pt = NULL;
+	//ProcessTable *pt = NULL;
 	if (i < 0 || i >= MAX_SEM_NUM) {
 		pcb[current].regs.eax = -1;
 		return;
