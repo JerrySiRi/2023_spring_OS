@@ -140,7 +140,7 @@ void timerHandle(struct StackFrame *sf) {
 	}
 }
 
-void keyboardHandle(struct StackFrame *sf) {//【格式化读入的预先处理--放入buffer之中】
+void keyboardHandle(struct StackFrame *sf) {//【格式化读入---写buffer=键盘中断】
 //每按下一个按键就会触发一次键盘中断，每次只需要把恩下的那一个键的keycode放入buffer之中即可！
 	uint32_t keyCode = getKeyCode();
 	if (keyCode == 0) // illegal keyCode
@@ -207,7 +207,7 @@ void keyboardHandle(struct StackFrame *sf) {//【格式化读入的预先处理-
 		pt->state=STATE_RUNNABLE;
 		//pt->timecount=MAX_TIME_COUNT;这两行最好别加，为了保证唤醒后的运行逻辑不发生过改变，原来时间片剩多长时间就运行多久！
 		//pt->sleeptime=0;--------------加这两行也不会错，只是调度会和期望的不同
-		dev[STD_IN].value = 1;//【有一个字符可以读入！！！前面唤醒的进程可以用来读他！】
+		dev[STD_IN].value = 1;//【因为最多只能有一个线程被阻塞，唤醒了之后全部可以读！》》此时有一个字符可以由本读入！！！】
 		asm volatile("int $0x20");//符合逻辑，此时有一个进程被唤醒，发时间中断，看调度器会不会调度他！---------不加应该也没事
 	}
 	
@@ -292,7 +292,7 @@ void syscallWriteStdOut(struct StackFrame *sf) {
 	return;
 }
 
-void syscallRead(struct StackFrame *sf) {//【格式化读入】
+void syscallRead(struct StackFrame *sf) {//【格式化读入---读buffer】
 	switch(sf->ecx) {
 		case STD_IN:
 			if (dev[STD_IN].state == 1)
@@ -310,10 +310,11 @@ void syscallReadStdIn(struct StackFrame *sf) {
 	//dev[STD_IN].value--;【此时value>0的时候是可以读入的字符数量---可以全读完！！！！！value<0的时候是阻塞的数量】
 	
 	if(dev[STD_IN].state ==1 && dev[STD_IN].value < 0){//已经有一个进程阻塞！而且当前又有进程想读》》多个想读，阻塞 && 而且没有资源
-        	pcb[current].regs.eax = -1;//XXX：如果多个进程想读，后来的进程返回-1。【下面其他情况返回实际读取的字符数】
+        	pcb[current].regs.eax = -1;//XXX：如果多个进程想读，后来的进程(pcb[current])返回-1。【下面其他情况返回实际读取的字符数】
+		//XXX:为了保证只有一个进程被阻塞在dev[STD_IN]之中，当前进程运行到这里，如果已经value<0就不会被加入到阻塞列表中，而直接给返回值-1！
         	return;
     	}
-	else if(dev[STD_IN].state==1 && dev[STD_IN].value==0){//一个进程想读而阻塞 && 而且没有资源。加入阻塞列表+修改信息
+	else if(dev[STD_IN].state==1 && dev[STD_IN].value==0){//一个进程想读&& 而且没有资源。加入阻塞列表+修改信息
 		pcb[current].blocked.next = dev[STD_IN].pcb.next;
 		pcb[current].blocked.prev = &(dev[STD_IN].pcb);
 		dev[STD_IN].pcb.next = &(pcb[current].blocked);
@@ -321,7 +322,8 @@ void syscallReadStdIn(struct StackFrame *sf) {
 
 		pcb[current].state = STATE_BLOCKED;
 		pcb[current].sleepTime = 0;
-		pcb[current].regs.eax = 0;//XXX：一个进程阻塞&没有资源，返回0
+		pcb[current].regs.eax = 0;//XXX：一个进程&没有资源，返回0（一个都读不出来）
+		dev[STD_IN].value--;
 		asm volatile("int $0x20");
 		return ;
 	}
@@ -423,6 +425,8 @@ void syscallExit(struct StackFrame *sf) {
 	return;
 }
 
+//信号量操作的分发
+
 void syscallSem(struct StackFrame *sf) {
 	switch(sf->ecx) {
 		case SEM_INIT:
@@ -441,26 +445,118 @@ void syscallSem(struct StackFrame *sf) {
 	}
 }
 
-void syscallSemInit(struct StackFrame *sf) {
+
+/*
+XXX:以下所有的参数都是传的uint32_t，如果是*sem，就是当前信号量在sem数组中的下标！！！
+int sem_init(sem_t *sem, uint32_t value) {
+	*sem = syscall(SYS_SEM, SEM_INIT,  value, 0, 0, 0);------syscall中参数存放的位置 eax(系统调用号) ecx（参数1） edx（参数2）
+	if (*sem != -1)
+		return 0;
+	else
+		return -1;
+}
+
+int sem_wait(sem_t *sem) {
+	return syscall(SYS_SEM, SEM_WAIT, *sem, 0, 0, 0);-----edx存放指针sem！
+}
+
+int sem_post(sem_t *sem) {
+	return syscall(SYS_SEM, SEM_POST, *sem, 0, 0, 0);
+}
+
+int sem_destroy(sem_t *sem) {
+	return syscall(SYS_SEM, SEM_DESTROY, *sem, 0, 0, 0);
+}
+
+*/
+
+//XXX：以下调用这些函数的都是当前进程pcb[current]!!!返回值也是都针对当前进程而返回的！！！
+void syscallSemInit(struct StackFrame *sf) {//从sem数组中拿一个出来进行初始化
 	// TODO: complete `SemInit`
+ disableInterrupt();
+
+	int value = (int)sf->edx;//memory.h中定义的是uint32_t类型的,不改会报错
+	int free;
+    	for (free = 0; free < MAX_SEM_NUM; free++) {
+        	if (sem[free].state == 0) 
+			break;
+    	}
+   	if (free == MAX_SEM_NUM)
+        	pcb[current].regs.eax = -1;//没有空位置能用来初始化，由定义返回-1
+    	else {
+        	sem[free].state = 1;
+		sem[free].value= value;
+        	sem[free].pcb.prev = &sem[free].pcb;//kernel初始化的时候两个前后指针都指向自己呢
+        	sem[free].pcb.next = &sem[free].pcb;
+       		pcb[current].regs.eax = free;//下标当作返回值，用户程序能找到
+    	}	
+enableInterrupt();
 	return;
 }
 
 void syscallSemWait(struct StackFrame *sf) {
-	// TODO: complete `SemWait` and note that you need to consider some special situations
+	// TODO: complete `SemWait` and note that you need to consider some special situations--输入的参数不合法！（信号量不可用或范围）
+	//XXX 习惯！！！先考虑不合法的情况！！！XXX
+ disableInterrupt();
+
+	int index = (int)(sf->edx);
+	if(index < 0 || index >= MAX_SEM_NUM || sem[index].state == 0)
+		pcb[current].regs.eax=-1;
+	else{//此时传入的下标满足。开始执行P操作
+		sem[index].value--;
+		if(sem[index].value<0){
+			pcb[current].state=STATE_BLOCKED;
+			pcb[current].sleepTime=0x7fffffff;//给他最大的睡眠时间，只有V操作的唤醒+时间中断重新调度会让他不再睡眠！
+            		pcb[current].blocked.next = sem[index].pcb.next;
+            		pcb[current].blocked.prev = &(sem[index].pcb);
+            		sem[index].pcb.next = &(pcb[current].blocked);
+            		(pcb[current].blocked.next)->prev = &(pcb[current].blocked);
+            		pcb[current].regs.eax = 0;
+			asm("int $0x20");//引发时间中断，重新调度
+		}
+	}
+enableInterrupt();
+	return ;
 }
 
 void syscallSemPost(struct StackFrame *sf) {
+
+ disableInterrupt();
 	int i = (int)sf->edx;
-	//ProcessTable *pt = NULL;
-	if (i < 0 || i >= MAX_SEM_NUM) {
+	ProcessTable *pt = NULL;
+	if (i < 0 || i >= MAX_SEM_NUM || sem[i].state==0) {// TODO: complete other situations
 		pcb[current].regs.eax = -1;
 		return;
 	}
-	// TODO: complete other situations
+	
+	//可以执行V
+	sem[i].value++;
+	if(sem[i].value <= 0){
+		pt = (ProcessTable*)((uint32_t)(sem[i].pcb.prev) -(uint32_t)&(((ProcessTable*)0)->blocked));//取出来的进程
+		sem[i].pcb.prev = (sem[i].pcb.prev)->prev;
+		(sem[i].pcb.prev)->next = &(sem[i].pcb);
+		pt->state=STATE_RUNNABLE;
+		pcb[current].regs.eax=0;
+
+	}
+enableInterrupt();
+	return ;
+
 }
 
-void syscallSemDestroy(struct StackFrame *sf) {
+void syscallSemDestroy(struct StackFrame *sf) {//销毁下标是sf->edx的信号量，即恢复原样！
 	// TODO: complete `SemDestroy`
+ disableInterrupt();
+	int index=(int)(sf->edx);
+	if(index<0 || index >= MAX_SEM_NUM || sem[index].state==0)
+		pcb[current].regs.eax=-1;
+	else{
+		sem[index].state = 0;
+		sem[index].value =0;
+		sem[index].pcb.next=&(sem[index].pcb);
+		sem[index].pcb.prev=&(sem[index].pcb);
+		pcb[current].regs.eax=0;
+	} 
+enableInterrupt();
 	return;
 }
