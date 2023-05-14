@@ -581,10 +581,11 @@ int sem_init(sem_t *sem, uint32_t value) {
 		return -1;
 }
 
+//P
 int sem_wait(sem_t *sem) {
 	return syscall(SYS_SEM, SEM_WAIT, *sem, 0, 0, 0);
 }
-
+//V
 int sem_post(sem_t *sem) {
 	return syscall(SYS_SEM, SEM_POST, *sem, 0, 0, 0);
 }
