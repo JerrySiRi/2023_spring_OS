@@ -7,6 +7,7 @@ void test(int i,int *now_state,sem_t* forks);
 
 
 int uEntry(void) {
+/*
 	// For lab4.1
 	// Test 'scanf' 
 	int dec = 0;
@@ -58,7 +59,7 @@ int uEntry(void) {
 		sem_destroy(&sem);
 		exit();
 	}
-
+*/
 	// For lab4.3
 	// TODO: You need to design and test the philosopher problem.
 	// Producer-Consumer problem and Reader& Writer Problem are optional.
@@ -69,21 +70,21 @@ int uEntry(void) {
 	//就餐的时候：printf("Philosopher %d:eat\n",id);
 	//任意P、V及思考、就餐之间，添加sleep(128)
 
-printf("okok");
-int now_state[5];
-sem_t forks[5];
-sem_t mutex;
+
+	int now_state[5];
+	sem_t forks[5];
+	sem_t mutex;
 
 	//【step1：信号量初始化+状态初始化,forks和mutex。在创建子进程之前完成，保证只初始化一次！】
 	for(int i=0;i<5;i++){
 		int result_1 = sem_init(&forks[i],0);
 		if(result_1<0)
-			{printf("something wrong with initializing semaphores forks");exit();}
+			{printf("something wrong with initializing semaphores forks\n");exit();}
 	}
 
 	int result_2 = sem_init(&mutex,1);
 	if(result_2<0)
-		{printf("something wrong with initializing semaphores(lock) mutex");exit();}
+		{printf("something wrong with initializing semaphores(lock) mutex\n");exit();}
 
 	for(int i=0;i<5;i++)
 		now_state[i]=THINKING;
@@ -96,7 +97,7 @@ sem_t mutex;
 		if(new_ph==0)//子进程返回，此时cur_ph就指示当前子进程中哲学家的编号是什么了！
 			break;
 		else if(cur_ph<0){
-			printf("something wrong with creating new philosophers");
+			printf("something wrong with creating new philosophers\n");
 			exit();
 		}	
 	}
@@ -121,9 +122,9 @@ sem_t mutex;
 	test(right_c,now_state,forks);//此时sem_post操作中会有时间中断来重新调度的呢！
 	sem_post(&mutex);
 
-	printf("finishing think&eat,philosopher %d is released",cur_ph);
+	printf("finishing think&eat,philosopher %d is released\n",cur_ph);
 	sem_destroy(&forks[cur_ph]);
-	
+	exit();
 	return 0;
 }
 

@@ -47,7 +47,7 @@ struct ListHead {
 	struct ListHead *prev;
 };
 
-#define MAX_SEM_NUM 4
+#define MAX_SEM_NUM 6
 
 struct Semaphore {
 	int state;
@@ -56,7 +56,7 @@ struct Semaphore {
 };
 typedef struct Semaphore Semaphore;
 
-#define MAX_DEV_NUM 4
+#define MAX_DEV_NUM 6
 
 struct Device {
 	int state;
