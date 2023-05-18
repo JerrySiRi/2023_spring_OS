@@ -7,7 +7,7 @@ void test(int i,int *now_state,sem_t* forks);
 
 
 int uEntry(void) {
-/*
+
 	// For lab4.1
 	// Test 'scanf' 
 	int dec = 0;
@@ -59,7 +59,8 @@ int uEntry(void) {
 		sem_destroy(&sem);
 		exit();
 	}
-*/
+
+
 	// For lab4.3
 	// TODO: You need to design and test the philosopher problem.
 	// Producer-Consumer problem and Reader& Writer Problem are optional.
@@ -70,7 +71,7 @@ int uEntry(void) {
 	//就餐的时候：printf("Philosopher %d:eat\n",id);
 	//任意P、V及思考、就餐之间，添加sleep(128)
 
-
+/*
 	int now_state[5];
 	sem_t forks[5];
 	sem_t mutex;
@@ -103,6 +104,8 @@ int uEntry(void) {
 	}
 
 	//【step3：开始思考吃饭】
+	for(int i=0;i<5;i++){
+
 	printf("Philosopher %d:think\n",cur_ph);
 	sleep(128);
 
@@ -121,10 +124,11 @@ int uEntry(void) {
 	test(left_c,now_state,forks);
 	test(right_c,now_state,forks);//此时sem_post操作中会有时间中断来重新调度的呢！
 	sem_post(&mutex);
-
+	}
 	printf("finishing think&eat,philosopher %d is released\n",cur_ph);
 	sem_destroy(&forks[cur_ph]);
 	exit();
+*/
 	return 0;
 }
 

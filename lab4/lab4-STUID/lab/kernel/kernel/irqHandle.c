@@ -537,7 +537,7 @@ void syscallSemPost(struct StackFrame *sf) {
 		(sem[i].pcb.prev)->next = &(sem[i].pcb);
 		pt->state=STATE_RUNNABLE;
 		pcb[current].regs.eax=0;
-
+		asm("int $0x20");
 	}
 enableInterrupt();
 	return ;
